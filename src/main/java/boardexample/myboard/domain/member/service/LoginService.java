@@ -32,10 +32,10 @@ public class LoginService implements UserDetailsService {
                 .build();
     }
 
-    /*@PostConstruct
+    @PostConstruct
     @Transactional
     public void init(){
         PasswordEncoder delegatingPasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         memberRepository.save(Member.builder().username("username").password(delegatingPasswordEncoder.encode("1234567890")).name("Member1").nickName("NickName1").role(Role.USER).age(22).build());
-    }*/
+    }
 }
