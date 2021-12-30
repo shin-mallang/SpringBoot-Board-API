@@ -2,6 +2,7 @@ package boardexample.myboard.global.login.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import javax.servlet.ServletException;
@@ -15,6 +16,8 @@ public class LoginSuccessJWTProvideHandler extends SimpleUrlAuthenticationSucces
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
       log.info("로그인에 성공했습니다! 토큰을 발급합니다 {}",authentication.getPrincipal() );
+      log.info("로그인에 성공했습니다! 토큰을 발급합니다 {}",authentication.getPrincipal().getClass() );
+      log.info("로그인에 성공했습니다! 토큰을 발급합니다 {}", SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass() );
 
     }
 }

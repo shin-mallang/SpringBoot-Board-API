@@ -1,7 +1,7 @@
 package boardexample.myboard.global.config;
 
 import boardexample.myboard.domain.member.service.LoginService;
-import boardexample.myboard.global.login.filter.JsonUsernamePasswordLoginFilter;
+import boardexample.myboard.global.login.filter.JsonUsernamePasswordAuthenticationFilter;
 import boardexample.myboard.global.login.handler.LoginFailureHandler;
 import boardexample.myboard.global.login.handler.LoginSuccessJWTProvideHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,11 +26,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final ObjectMapper objectMapper;
 
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
         http
-                .formLogin().disable()///1 - formLogin 인증방법 비활성화
+                .formLogin().and()//.disable()///1 - formLogin 인증방법 비활성화
                 .httpBasic().disable()//2 - httpBasic 인증방법 비활성화(특정 리소스에 접근할 때 username과 password 물어봄)
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -44,7 +45,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-    @Bean
     public PasswordEncoder passwordEncoder(){
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
@@ -68,8 +68,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public JsonUsernamePasswordLoginFilter jsonUsernamePasswordLoginFilter(){
-        JsonUsernamePasswordLoginFilter jsonUsernamePasswordLoginFilter = new JsonUsernamePasswordLoginFilter(objectMapper, authenticationManager());
+    public JsonUsernamePasswordAuthenticationFilter jsonUsernamePasswordLoginFilter(){
+        JsonUsernamePasswordAuthenticationFilter jsonUsernamePasswordLoginFilter = new JsonUsernamePasswordAuthenticationFilter(objectMapper);
+        jsonUsernamePasswordLoginFilter.setAuthenticationManager(authenticationManager());
         jsonUsernamePasswordLoginFilter.setAuthenticationSuccessHandler(loginSuccessJWTProvideHandler());
         jsonUsernamePasswordLoginFilter.setAuthenticationFailureHandler(loginFailureHandler());
         return jsonUsernamePasswordLoginFilter;
