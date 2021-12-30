@@ -32,6 +32,7 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 30)
     private Integer age;//나이
 
+    @Enumerated(EnumType.STRING)
     private Role role;//권한 -> USER, ADMIN
 
 
