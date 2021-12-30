@@ -15,9 +15,16 @@ public class LoginSuccessJWTProvideHandler extends SimpleUrlAuthenticationSucces
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-      log.info("로그인에 성공했습니다! 토큰을 발급합니다 {}",authentication.getPrincipal() );
-      log.info("로그인에 성공했습니다! 토큰을 발급합니다 {}",authentication.getPrincipal().getClass() );
-      log.info("로그인에 성공했습니다! 토큰을 발급합니다 {}", SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass() );
+      log.info("로그인에 성공했습니다! 토큰을 발급합니다 " +
+                      "[authentication.getPrincipal{}] , " +
+                      "[authentication.getPrincipal().getClass(){}], " +
+                      "[SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass() {}]",
+                      "[SecurityContextHolder.getContext().getAuthentication().getPrincipal() {}]",
+              authentication.getPrincipal(),
+              authentication.getPrincipal().getClass(),
+              SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass(),
+              SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
+      response.getWriter().write("success");
     }
 }
