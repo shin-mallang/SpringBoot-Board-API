@@ -46,7 +46,6 @@ public class LoginTest {
     private static String PASSWORD = "123456789";
     private static String LOGIN_RUL = "/login";
 
-    private static String LOGIN_SUCCESS_MESSAGE = "success";
     private static String LOGIN_FAIL_MESSAGE = "fail";
 
 

@@ -32,7 +32,7 @@ public class LoginService implements UserDetailsService {
                 .build();
     }
 
-/*    @PostConstruct
+    /*@PostConstruct
     @Transactional
     public void init(){
         PasswordEncoder delegatingPasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();

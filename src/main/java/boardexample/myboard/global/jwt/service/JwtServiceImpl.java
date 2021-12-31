@@ -122,12 +122,20 @@ public class JwtServiceImpl implements JwtService{
 
     @Override
     public Optional<String> extractAccessToken(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader(accessHeader)).map(accessToken -> accessToken.replace(BEARER, ""));
+        return Optional.ofNullable(request.getHeader(accessHeader)).filter(
+
+                refreshToken -> refreshToken.startsWith(BEARER)
+
+        ).map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
 
     @Override
     public Optional<String> extractRefreshToken(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader(refreshHeader)).map(refreshToken -> refreshToken.replace(BEARER, ""));
+        return Optional.ofNullable(request.getHeader(refreshHeader)).filter(
+
+                refreshToken -> refreshToken.startsWith(BEARER)
+
+                ).map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
 
     @Override
@@ -149,4 +157,15 @@ public class JwtServiceImpl implements JwtService{
     public void setRefreshTokenHeader(HttpServletResponse response, String refreshToken) {
         response.setHeader(refreshHeader, refreshToken);
     }
+    @Override
+    public boolean isTokenValid(String token){
+        try {
+            JWT.require(Algorithm.HMAC512(secret)).build().verify(token);
+            return true;
+        }catch (Exception e){
+            log.error("유효하지 않은 Token입니다", e.getMessage());
+            return false;
+        }
+    }
+
 }

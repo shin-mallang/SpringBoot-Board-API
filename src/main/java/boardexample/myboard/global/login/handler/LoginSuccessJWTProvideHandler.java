@@ -1,5 +1,6 @@
 package boardexample.myboard.global.login.handler;
 
+import boardexample.myboard.domain.member.repository.MemberRepository;
 import boardexample.myboard.global.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,20 +19,24 @@ import java.io.IOException;
 public class LoginSuccessJWTProvideHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtService jwtService;
+    private final MemberRepository memberRepository;
 
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+
         String username = extractUsername(authentication);
-
-        log.info( "로그인에 성공합니다 JWT를 발급합니다. username: {}" ,username);
-
-
-
         String accessToken = jwtService.createAccessToken(username);
-        log.info( "로그인에 성공합니다 JWT를 발급합니다. username: {}" ,accessToken);
         String refreshToken = jwtService.createRefreshToken();
+
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
+        memberRepository.findByUsername(username).ifPresent(
+                member -> member.updateRefreshToken(refreshToken)
+        );
+
+        log.info( "로그인에 성공합니다. username: {}" ,username);
+        log.info( "AccessToken 을 발급합니다. AccessToken: {}" ,accessToken);
+        log.info( "RefreshToken 을 발급합니다. RefreshToken: {}" ,refreshToken);
     }
 
 
