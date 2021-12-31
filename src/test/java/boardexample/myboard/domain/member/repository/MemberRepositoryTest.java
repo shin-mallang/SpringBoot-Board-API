@@ -177,7 +177,9 @@ class MemberRepositoryTest {
 
 
         //when, then
-        assertThat(memberRepository.findByUsername(username)).isEqualTo(member1);
+        assertThat(memberRepository.findByUsername(username).get().getUsername()).isEqualTo(member1.getUsername());
+        assertThat(memberRepository.findByUsername(username).get().getName()).isEqualTo(member1.getName());
+        assertThat(memberRepository.findByUsername(username).get().getId()).isEqualTo(member1.getId());
         assertThrows(Exception.class,
                 () -> memberRepository.findByUsername(username+"123")
                         .orElseThrow(() -> new Exception()));

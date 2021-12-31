@@ -1,6 +1,7 @@
 package boardexample.myboard.global.config;
 
 import boardexample.myboard.domain.member.service.LoginService;
+import boardexample.myboard.global.jwt.service.JwtService;
 import boardexample.myboard.global.login.filter.JsonUsernamePasswordAuthenticationFilter;
 import boardexample.myboard.global.login.handler.LoginFailureHandler;
 import boardexample.myboard.global.login.handler.LoginSuccessJWTProvideHandler;

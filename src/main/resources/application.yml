@@ -15,6 +15,12 @@ spring:
     hibernate:
       ddl-auto: create
 
+
+  profiles:
+    include: jwt
+
+
+
 logging:
   level:
     org:
@@ -27,3 +33,4 @@ logging:
 
     boardexample:
       myboard: info
+
