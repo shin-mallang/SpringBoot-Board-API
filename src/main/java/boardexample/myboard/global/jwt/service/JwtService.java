@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 public interface JwtService {
 
@@ -20,14 +21,15 @@ public interface JwtService {
     void destroyRefreshToken(String username);
 
 
-    void sendToken(HttpServletResponse response, String accessToken, String refreshToken) throws IOException;
+    void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken);
+    void sendAccessToken(HttpServletResponse response, String accessToken);
 
 
-    String extractAccessToken(HttpServletRequest request) throws IOException, ServletException;
+    Optional<String> extractAccessToken(HttpServletRequest request);
 
-    String extractRefreshToken(HttpServletRequest request) throws IOException, ServletException;
+    Optional<String> extractRefreshToken(HttpServletRequest request);
 
-    String extractUsername(String accessToken);
+    Optional<String> extractUsername(String accessToken);
 
 
 
