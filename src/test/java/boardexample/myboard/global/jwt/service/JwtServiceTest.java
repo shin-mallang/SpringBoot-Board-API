@@ -5,7 +5,6 @@ import boardexample.myboard.domain.member.repository.MemberRepository;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -124,7 +122,19 @@ class JwtServiceTest {
         Member member = memberRepository.findByUsername(username).get();
         assertThat(member.getRefreshToken()).isNull();
     }
+    @Test
+    public void 토큰_유효성_검사() throws Exception {
+        //given
+        String accessToken = jwtService.createAccessToken(username);
+        String refreshToken = jwtService.createRefreshToken();
 
+        //when, then
+        assertThat(jwtService.isTokenValid(accessToken)).isTrue();
+        assertThat(jwtService.isTokenValid(refreshToken)).isTrue();
+        assertThat(jwtService.isTokenValid(accessToken+"d")).isFalse();
+        assertThat(jwtService.isTokenValid(accessToken+"d")).isFalse();
+
+    }
 
 
     @Test
@@ -137,7 +147,7 @@ class JwtServiceTest {
         jwtService.setAccessTokenHeader(mockHttpServletResponse, accessToken);
 
 
-        //when TODO
+        //when
         jwtService.sendAccessAndRefreshToken(mockHttpServletResponse,accessToken,refreshToken);
 
         //then
@@ -156,7 +166,7 @@ class JwtServiceTest {
         jwtService.setRefreshTokenHeader(mockHttpServletResponse, refreshToken);
 
 
-        //when TODO
+        //when
         jwtService.sendAccessAndRefreshToken(mockHttpServletResponse,accessToken,refreshToken);
 
         //then
@@ -173,13 +183,12 @@ class JwtServiceTest {
     public void sendAccessAndRefreshToken_토큰_전송() throws Exception {
         //given
         MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
-        ObjectMapper objectMapper = new ObjectMapper();
 
         String accessToken = jwtService.createAccessToken(username);
         String refreshToken = jwtService.createRefreshToken();
 
 
-        //when TODO
+        //when
         jwtService.sendAccessAndRefreshToken(mockHttpServletResponse,accessToken,refreshToken);
 
 
@@ -187,15 +196,11 @@ class JwtServiceTest {
         String headerAccessToken = mockHttpServletResponse.getHeader(accessHeader);
         String headerRefreshToken = mockHttpServletResponse.getHeader(refreshHeader);
 
-        //TODO
-        /*Map<String, String> tokenMap = objectMapper.readValue(mockHttpServletResponse.getContentAsString(), Map.class);
-        String bodyAccessToken = tokenMap.get(ACCESS_TOKEN_SUBJECT);
-        String bodyRefreshToken = tokenMap.get(REFRESH_TOKEN_SUBJECT);*/
+
 
         assertThat(headerAccessToken).isEqualTo(accessToken);
         assertThat(headerRefreshToken).isEqualTo(refreshToken);
-       /* assertThat(bodyAccessToken).isEqualTo(accessToken);
-        assertThat(bodyRefreshToken).isEqualTo(refreshToken);*/
+
     }
 
 
@@ -206,7 +211,7 @@ class JwtServiceTest {
         String refreshToken = jwtService.createRefreshToken();
         HttpServletRequest httpServletRequest = setRequest(accessToken, refreshToken);
 
-        //when TODO
+        //when
         String extractAccessToken = jwtService.extractAccessToken(httpServletRequest).orElseThrow(()-> new Exception("토큰이 없습니다"));
 
 
@@ -224,7 +229,7 @@ class JwtServiceTest {
         HttpServletRequest httpServletRequest = setRequest(accessToken, refreshToken);
 
 
-        //when TODO
+        //when
         String extractRefreshToken = jwtService.extractRefreshToken(httpServletRequest).orElseThrow(()-> new Exception("토큰이 없습니다"));
 
 
@@ -237,7 +242,7 @@ class JwtServiceTest {
     private HttpServletRequest setRequest(String accessToken, String refreshToken) throws IOException {
 
         MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
-        //TODO
+
         jwtService.sendAccessAndRefreshToken(mockHttpServletResponse,accessToken,refreshToken);
 
         String headerAccessToken = mockHttpServletResponse.getHeader(accessHeader);
@@ -259,7 +264,6 @@ class JwtServiceTest {
         String refreshToken = jwtService.createRefreshToken();
         HttpServletRequest httpServletRequest = setRequest(accessToken, refreshToken);
 
-        //TODO
         String requestAccessToken = jwtService.extractAccessToken(httpServletRequest).orElseThrow(()->new Exception("토큰이 없습니다"));
 
         //when
