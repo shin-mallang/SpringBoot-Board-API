@@ -26,9 +26,12 @@ public class LoginSuccessJWTProvideHandler extends SimpleUrlAuthenticationSucces
 
         log.info( "로그인에 성공합니다 JWT를 발급합니다. username: {}" ,username);
 
-     /*   String accessToken = jwtService.createAccessToken(username);
+
+
+        String accessToken = jwtService.createAccessToken(username);
+        log.info( "로그인에 성공합니다 JWT를 발급합니다. username: {}" ,accessToken);
         String refreshToken = jwtService.createRefreshToken();
-        jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);*/
+        jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
     }
 
 

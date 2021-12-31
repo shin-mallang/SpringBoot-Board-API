@@ -1,6 +1,8 @@
 package boardexample.myboard.global.config;
 
+import boardexample.myboard.domain.member.repository.MemberRepository;
 import boardexample.myboard.domain.member.service.LoginService;
+import boardexample.myboard.global.jwt.filter.JwtAuthenticationProcessingFilter;
 import boardexample.myboard.global.jwt.service.JwtService;
 import boardexample.myboard.global.login.filter.JsonUsernamePasswordAuthenticationFilter;
 import boardexample.myboard.global.login.handler.LoginFailureHandler;
@@ -25,6 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final LoginService loginService;
     private final ObjectMapper objectMapper;
+    private final MemberRepository memberRepository;
     private final JwtService jwtService;
 
 
@@ -44,6 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
 
         http.addFilterAfter(jsonUsernamePasswordLoginFilter(), LogoutFilter.class);
+        http.addFilterBefore(jwtAuthenticationProcessingFilter(), JsonUsernamePasswordAuthenticationFilter.class);
 
     }
 
@@ -76,6 +80,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         jsonUsernamePasswordLoginFilter.setAuthenticationManager(authenticationManager());
         jsonUsernamePasswordLoginFilter.setAuthenticationSuccessHandler(loginSuccessJWTProvideHandler(jwtService));
         jsonUsernamePasswordLoginFilter.setAuthenticationFailureHandler(loginFailureHandler());
+        return jsonUsernamePasswordLoginFilter;
+    }
+
+    @Bean
+    public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter(){
+        JwtAuthenticationProcessingFilter jsonUsernamePasswordLoginFilter = new JwtAuthenticationProcessingFilter(jwtService, memberRepository);
+
         return jsonUsernamePasswordLoginFilter;
     }
 }

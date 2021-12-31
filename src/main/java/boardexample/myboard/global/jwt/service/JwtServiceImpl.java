@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Setter(value = AccessLevel.PRIVATE)
+@Slf4j
 public class JwtServiceImpl implements JwtService{
 
     @Value("${jwt.secret}")
@@ -130,8 +132,12 @@ public class JwtServiceImpl implements JwtService{
 
     @Override
     public Optional<String> extractUsername(String accessToken) {
-        return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secret)).build().verify(accessToken).getClaim(USERNAME_CLAIM).asString());
-
+        try {
+            return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secret)).build().verify(accessToken).getClaim(USERNAME_CLAIM).asString());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
