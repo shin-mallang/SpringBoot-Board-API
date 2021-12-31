@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -71,6 +72,12 @@ public class LoginTest {
      *
      */
 
+
+    @Value("${jwt.access.header}")
+    private String accessHeader;
+    @Value("${jwt.refresh.header}")
+    private String refreshHeader;
+
     @Test
     public void 로그인_성공() throws Exception {
         //given
@@ -90,8 +97,9 @@ public class LoginTest {
 
 
         //then
-        String contentAsString = result.getResponse().getContentAsString();
-        assertThat(contentAsString).isEqualTo(LOGIN_SUCCESS_MESSAGE);
+        assertThat(result.getResponse().getHeader(accessHeader)).isNotNull();
+        assertThat(result.getResponse().getHeader(refreshHeader)).isNotNull();
+
 
     }
 
@@ -115,8 +123,8 @@ public class LoginTest {
 
 
         //then
-        String contentAsString = result.getResponse().getContentAsString();
-        assertThat(contentAsString).isEqualTo(LOGIN_FAIL_MESSAGE);
+        assertThat(result.getResponse().getHeader(accessHeader)).isNull();
+        assertThat(result.getResponse().getHeader(refreshHeader)).isNull();
 
     }
 
@@ -139,8 +147,8 @@ public class LoginTest {
 
 
         //then
-        String contentAsString = result.getResponse().getContentAsString();
-        assertThat(contentAsString).isEqualTo(LOGIN_FAIL_MESSAGE);
+        assertThat(result.getResponse().getHeader(accessHeader)).isNull();
+        assertThat(result.getResponse().getHeader(refreshHeader)).isNull();
 
     }
 

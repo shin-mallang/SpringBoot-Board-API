@@ -25,6 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final LoginService loginService;
     private final ObjectMapper objectMapper;
+    private final JwtService jwtService;
 
 
 
@@ -60,8 +61,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public LoginSuccessJWTProvideHandler loginSuccessJWTProvideHandler(){
-        return new LoginSuccessJWTProvideHandler();
+    public LoginSuccessJWTProvideHandler loginSuccessJWTProvideHandler(JwtService jwtService){
+        return new LoginSuccessJWTProvideHandler(jwtService);
     }
 
     @Bean
@@ -73,7 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public JsonUsernamePasswordAuthenticationFilter jsonUsernamePasswordLoginFilter(){
         JsonUsernamePasswordAuthenticationFilter jsonUsernamePasswordLoginFilter = new JsonUsernamePasswordAuthenticationFilter(objectMapper);
         jsonUsernamePasswordLoginFilter.setAuthenticationManager(authenticationManager());
-        jsonUsernamePasswordLoginFilter.setAuthenticationSuccessHandler(loginSuccessJWTProvideHandler());
+        jsonUsernamePasswordLoginFilter.setAuthenticationSuccessHandler(loginSuccessJWTProvideHandler(jwtService));
         jsonUsernamePasswordLoginFilter.setAuthenticationFailureHandler(loginFailureHandler());
         return jsonUsernamePasswordLoginFilter;
     }
