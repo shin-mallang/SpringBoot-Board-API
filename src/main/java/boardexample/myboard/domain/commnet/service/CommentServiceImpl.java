@@ -39,7 +39,7 @@ public class CommentServiceImpl implements CommentService{
     @Override
     public void remove(Long id) throws Exception {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new Exception("댓글이 없습니다."));
-        comment.removeContent();
+        comment.remove();
         List<Comment> removableCommentList = comment.findRemovableList();
         removableCommentList.forEach(removableComment -> commentRepository.delete(removableComment));
     }
