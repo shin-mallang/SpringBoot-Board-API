@@ -78,8 +78,6 @@ public class Member extends BaseTimeEntity {
 
 
 
-
-
     //== 정보 수정 ==//
     public void updatePassword(PasswordEncoder passwordEncoder, String password){
         this.password = passwordEncoder.encode(password);
@@ -111,4 +109,13 @@ public class Member extends BaseTimeEntity {
         this.password = passwordEncoder.encode(password);
     }
 
+
+    public boolean matchPassword(PasswordEncoder passwordEncoder, String checkPassword){
+        return passwordEncoder.matches(checkPassword, getPassword());
+    }
+
+
+    public void addUserAuthority() {
+        this.role = Role.USER;
+    }
 }
