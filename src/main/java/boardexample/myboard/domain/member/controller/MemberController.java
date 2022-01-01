@@ -28,16 +28,6 @@ public class MemberController {
     }
 
 
-    @PostMapping("/")
-    public void d(@RequestBody MemberUpdateDto memberUpdateDto){
-        System.out.println(memberUpdateDto.age().get());
-    }
-    @PutMapping("/")
-    public void d(@RequestBody MemberSignUpDto memberSignUpDto){
-        System.out.println(memberSignUpDto.age());
-    }
-
-
 
 
 
