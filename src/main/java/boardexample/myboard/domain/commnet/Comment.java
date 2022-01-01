@@ -4,14 +4,13 @@ package boardexample.myboard.domain.commnet;
 import boardexample.myboard.domain.BaseTimeEntity;
 import boardexample.myboard.domain.member.Member;
 import boardexample.myboard.domain.post.Post;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -39,17 +38,16 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "parent_id")
     private Comment parent;
 
+    @Lob
+    @Column(nullable = false)
+    private String content;
+
+    private boolean isRemoved= false;
 
 
     //== 부모 댓글을 삭제해도 자식 댓글은 남아있음 ==//
     @OneToMany(mappedBy = "parent")
     private List<Comment> childList = new ArrayList<>();
-
-
-
-    @Lob
-    @Column(nullable = false)
-    private String content;
 
 
 
@@ -75,32 +73,66 @@ public class Comment extends BaseTimeEntity {
     }
 
 
+
+
     //== 수정 ==//
     public void updateContent(String content) {
         this.content = content;
     }
+    //== 삭제 ==//
+    public void removeContent() {
+        this.isRemoved = true;
+    }
 
 
-    /**
-     * 댓글을 삭제하는 경우 - 2가지
-     *
-     *   1. 댓글을 삭제하는 경우
-     *   2. 대댓글을 삭제하는 경우
-     *
-     *      1 - 1. 댓글을 삭제하는 경우 - 대댓글이 남아있을 때
-     *          내용은 지워지나, DB에서 사라지지는 않음,
-     *
-     *      1 - 2. 댓글을 삭제하는 경우 - 대댓글이 없을 때
-     *          곧바로 삭제 (지워진 대댓글들도 DB에서 모두 지워주어야 함)
-     *
-     *
-     *      2 - 1. 대댓글을 삭제하는 경우 - 부모가 삭제되지 않은 댓글일 경우
-     *          2 - 1 - 1. 대댓글만 삭제(내용을 비움, 부모가 삭제되기 전까지 DB에 존재시킴)
-     *
-     *      2 - 2. 대댓글을 삭제하는 경우 - 부모가 삭제된 댓글인 경우
-     *              2 - 2 - 1. 이번에 삭제한 대댓글로 인해, 부모의 모든 대댓글이 삭제되는 경우 -> 부모의 댓글과, 달려있는 대댓글 모두 삭제(DB에서 삭제),
-     *              2 - 2 - 2. 아직 다른 대댓글이 남아있는 경우 -> 현재 대댓글의 내용만 지워줌
-     *
-     */
+
+    @Builder
+    public Comment( Member writer, Post post, Comment parent, String content) {
+        this.writer = writer;
+        this.post = post;
+        this.parent = parent;
+        this.content = content;
+        this.isRemoved = false;
+    }
+
+
+    //== 비즈니스 로직 ==//
+    public List<Comment> findRemovableList() {
+
+        List<Comment> result = new ArrayList<>();
+
+        Optional.ofNullable(this.parent).ifPresentOrElse(
+
+                parentComment ->{//대댓글인 경우 (부모가 존재하는 경우)
+                    if( parentComment.isRemoved()&& parentComment.isRemovedAllChild()){
+                        result.addAll(parentComment.getChildList());
+                        result.add(parentComment);
+                    }
+                },
+
+                () -> {//댓글인 경우
+                    if (isRemovedAllChild()) {
+                        result.add(this);
+                        result.addAll(this.getChildList());
+                    }
+                }
+        );
+
+        return result;
+    }
+
+
+    //자식의 모든 content 가 삭제되었는지 인지 판단
+    private boolean isRemovedAllChild() {
+        return getChildList().stream()//https://kim-jong-hyun.tistory.com/110 킹종현님 사랑합니다.
+                .map(Comment::isRemoved)//지워졌는지 여부로 바꾼다
+                .filter(isRemove -> !isRemove)//지워졌으면 true, 안지워졌으면 false이다. 따라서 filter에 걸러지는 것은 false인 녀석들이고, 있다면 false를 없다면 orElse를 통해 true를 반환한다.
+                .findAny()//지워지지 않은게 하나라도 있다면 false를 반환
+                .orElse(true);//모두 지워졌다면 true를 반환
+
+    }
+
+
+
 
 }
