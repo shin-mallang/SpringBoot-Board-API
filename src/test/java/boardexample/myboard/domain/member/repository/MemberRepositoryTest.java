@@ -1,6 +1,7 @@
 package boardexample.myboard.domain.member.repository;
 
 import boardexample.myboard.domain.member.Member;
+import boardexample.myboard.domain.member.Role;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +42,7 @@ class MemberRepositoryTest {
     @Test
     public void 회원저장_성공() throws Exception {
         //given
-        Member member = Member.builder().username("username").password("1234567890").name("Member1").nickName("NickName1").age(22).build();
+        Member member = Member.builder().username("username").password("1234567890").name("Member1").nickName("NickName1").role(Role.USER).age(22).build();
 
         //when
         Member saveMember = memberRepository.save(member);
@@ -56,7 +57,7 @@ class MemberRepositoryTest {
     @Test
     public void 오류_회원가입시_아이디가_없음() throws Exception {
         //given
-        Member member = Member.builder().password("1234567890").name("Member1").nickName("NickName1").age(22).build();
+        Member member = Member.builder().password("1234567890").name("Member1").nickName("NickName1").role(Role.USER).age(22).build();
 
         //when, then
         assertThrows(Exception.class, () -> memberRepository.save(member));
@@ -65,7 +66,7 @@ class MemberRepositoryTest {
     @Test
     public void 오류_회원가입시_이름이_없음() throws Exception {
         //given
-        Member member = Member.builder().username("username").password("1234567890").nickName("NickName1").age(22).build();
+        Member member = Member.builder().username("username").password("1234567890").nickName("NickName1").role(Role.USER).age(22).build();
 
         //when, then
         assertThrows(Exception.class, () -> memberRepository.save(member));
@@ -74,7 +75,7 @@ class MemberRepositoryTest {
     @Test
     public void 오류_회원가입시_닉네임이_없음() throws Exception {
         //given
-        Member member = Member.builder().username("username").password("1234567890").name("Member1").age(22).build();
+        Member member = Member.builder().username("username").password("1234567890").name("Member1").role(Role.USER).age(22).build();
 
         //when, then
         assertThrows(Exception.class, () -> memberRepository.save(member));
@@ -83,7 +84,7 @@ class MemberRepositoryTest {
     @Test
     public void 오류_회원가입시_나이가_없음() throws Exception {
         //given
-        Member member = Member.builder().username("username").password("1234567890").name("Member1").nickName("NickName1").build();
+        Member member = Member.builder().username("username").password("1234567890").name("Member1").role(Role.USER).nickName("NickName1").build();
 
         //when, then
         assertThrows(Exception.class, () -> memberRepository.save(member));
@@ -92,8 +93,8 @@ class MemberRepositoryTest {
     @Test
     public void 오류_회원가입시_중복된_아이디가_있음() throws Exception {
         //given
-        Member member1 = Member.builder().username("username").password("1234567890").name("Member1").nickName("NickName1").age(22).build();
-        Member member2 = Member.builder().username("username").password("1111111111").name("Member2").nickName("NickName2").age(22).build();
+        Member member1 = Member.builder().username("username").password("1234567890").name("Member1").role(Role.USER).nickName("NickName1").age(22).build();
+        Member member2 = Member.builder().username("username").password("1111111111").name("Member2").role(Role.USER).nickName("NickName2").age(22).build();
 
         memberRepository.save(member1);
         clear();
@@ -106,7 +107,7 @@ class MemberRepositoryTest {
     @Test
     public void 성공_회원수정() throws Exception {
         //given
-        Member member1 = Member.builder().username("username").password("1234567890").name("Member1").nickName("NickName1").age(22).build();
+        Member member1 = Member.builder().username("username").password("1234567890").name("Member1").role(Role.USER).nickName("NickName1").age(22).build();
         memberRepository.save(member1);
         clear();
 
@@ -137,7 +138,7 @@ class MemberRepositoryTest {
     @Test
     public void 성공_회원삭제() throws Exception {
         //given
-        Member member1 = Member.builder().username("username").password("1234567890").name("Member1").nickName("NickName1").age(22).build();
+        Member member1 = Member.builder().username("username").password("1234567890").name("Member1").role(Role.USER).nickName("NickName1").age(22).build();
         memberRepository.save(member1);
         clear();
 
@@ -156,7 +157,7 @@ class MemberRepositoryTest {
     public void existByUsername_정상작동() throws Exception {
         //given
         String username = "username";
-        Member member1 = Member.builder().username(username).password("1234567890").name("Member1").nickName("NickName1").age(22).build();
+        Member member1 = Member.builder().username(username).password("1234567890").name("Member1").role(Role.USER).nickName("NickName1").age(22).build();
         memberRepository.save(member1);
         clear();
 
@@ -171,7 +172,7 @@ class MemberRepositoryTest {
     public void findByUsername_정상작동() throws Exception {
         //given
         String username = "username";
-        Member member1 = Member.builder().username(username).password("1234567890").name("Member1").nickName("NickName1").age(22).build();
+        Member member1 = Member.builder().username(username).password("1234567890").name("Member1").role(Role.USER).nickName("NickName1").age(22).build();
         memberRepository.save(member1);
         clear();
 
@@ -189,7 +190,7 @@ class MemberRepositoryTest {
     @Test
     public void 회원가입시_생성시간_등록() throws Exception {
         //given
-        Member member1 = Member.builder().username("username").password("1234567890").name("Member1").nickName("NickName1").age(22).build();
+        Member member1 = Member.builder().username("username").password("1234567890").name("Member1").role(Role.USER).nickName("NickName1").age(22).build();
         memberRepository.save(member1);
         clear();
 
