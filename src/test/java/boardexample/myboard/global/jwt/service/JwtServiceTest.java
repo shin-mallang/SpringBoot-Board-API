@@ -1,6 +1,7 @@
 package boardexample.myboard.global.jwt.service;
 
 import boardexample.myboard.domain.member.Member;
+import boardexample.myboard.domain.member.Role;
 import boardexample.myboard.domain.member.repository.MemberRepository;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -50,7 +51,7 @@ class JwtServiceTest {
     @BeforeEach
     public void init(){
 
-        Member member = Member.builder().username(username).password("1234567890").name("Member1").nickName("NickName1").age(22).build();
+        Member member = Member.builder().username(username).password("1234567890").name("Member1").nickName("NickName1").role(Role.USER).age(22).build();
         memberRepository.save(member);
         clear();
     }
