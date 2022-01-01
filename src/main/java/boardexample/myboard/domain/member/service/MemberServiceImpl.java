@@ -26,7 +26,7 @@ public class MemberServiceImpl implements MemberService{
         Member member = memberSignUpDto.toEntity();
         member.addUserAuthority();
 
-        if(memberRepository.findByUsername(memberSignUpDto.getUsername()).isPresent()){
+        if(memberRepository.findByUsername(memberSignUpDto.username()).isPresent()){
             throw new Exception("이미 존재하는 아이디입니다.");
         }
 
@@ -37,9 +37,9 @@ public class MemberServiceImpl implements MemberService{
     public void update(MemberUpdateDto memberUpdateDto) throws Exception {
         Member member = memberRepository.findByUsername(SecurityUtil.getLoginUsername()).orElseThrow(() -> new Exception("회원이 존재하지 않습니다"));
 
-        memberUpdateDto.getAge().ifPresent(member::updateAge);
-        memberUpdateDto.getName().ifPresent(member::updateName);
-        memberUpdateDto.getNickName().ifPresent(member::updateNickName);
+        memberUpdateDto.age().ifPresent(member::updateAge);
+        memberUpdateDto.name().ifPresent(member::updateName);
+        memberUpdateDto.nickName().ifPresent(member::updateNickName);
     }
 
 
