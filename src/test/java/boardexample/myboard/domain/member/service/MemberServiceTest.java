@@ -46,7 +46,7 @@ class MemberServiceTest {
     }
 
     private MemberSignUpDto makeMemberSignUpDto() {
-        return new MemberSignUpDto("username",passwordEncoder.encode(PASSWORD),"name","nickNAme",22);
+        return new MemberSignUpDto("username",PASSWORD,"name","nickNAme",22);
     }
 
     private MemberSignUpDto setMember() throws Exception {
@@ -164,7 +164,7 @@ class MemberServiceTest {
 
 
         //when
-        String toBePassword = "1234567890";
+        String toBePassword = "1234567890!@#!@#";
         memberService.updatePassword(PASSWORD, toBePassword);
         clear();
 
