@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
@@ -18,7 +20,7 @@ public class MemberController {
      */
     @PostMapping("/signUp")
     @ResponseStatus(HttpStatus.OK)
-    public void signUp(@RequestBody MemberSignUpDto memberSignUpDto) throws Exception {
+    public void signUp(@Valid @RequestBody MemberSignUpDto memberSignUpDto) throws Exception {
         memberService.signUp(memberSignUpDto);
     }
 
@@ -27,7 +29,7 @@ public class MemberController {
      */
     @PutMapping("/member")
     @ResponseStatus(HttpStatus.OK)
-    public void updateBasicInfo(@RequestBody MemberUpdateDto memberUpdateDto) throws Exception {
+    public void updateBasicInfo(@Valid @RequestBody MemberUpdateDto memberUpdateDto) throws Exception {
         memberService.update(memberUpdateDto);
     }
 
@@ -36,7 +38,7 @@ public class MemberController {
      */
     @PutMapping("/member/password")
     @ResponseStatus(HttpStatus.OK)
-    public void updatePassword(@RequestBody UpdatePasswordDto updatePasswordDto) throws Exception {
+    public void updatePassword(@Valid @RequestBody UpdatePasswordDto updatePasswordDto) throws Exception {
         memberService.updatePassword(updatePasswordDto.checkPassword(),updatePasswordDto.toBePassword());
     }
 
@@ -46,7 +48,7 @@ public class MemberController {
      */
     @DeleteMapping("/member")
     @ResponseStatus(HttpStatus.OK)
-    public void withdraw(@RequestBody MemberWithdrawDto memberWithdrawDto) throws Exception {
+    public void withdraw(@Valid @RequestBody MemberWithdrawDto memberWithdrawDto) throws Exception {
         memberService.withdraw(memberWithdrawDto.checkPassword());
     }
 
@@ -55,7 +57,7 @@ public class MemberController {
      * 회원정보조회
      */
     @GetMapping("/member/{id}")
-    public ResponseEntity getInfo(@PathVariable("id") Long id) throws Exception {
+    public ResponseEntity getInfo(@Valid @PathVariable("id") Long id) throws Exception {
         MemberInfoDto info = memberService.getInfo(id);
         return new ResponseEntity(info, HttpStatus.OK);
     }
