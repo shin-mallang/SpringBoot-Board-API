@@ -442,20 +442,13 @@ class MemberControllerTest {
 
         //when
         MvcResult result = mockMvc.perform(
-                        get("/member/221331")
+                        get("/member/2211")
                                 .characterEncoding(StandardCharsets.UTF_8)
                                 .header(accessHeader, BEARER + accessToken))
                 .andExpect(status().isOk()).andReturn();
 
         //then
-        Map<String, Object> map = objectMapper.readValue(result.getResponse().getContentAsString(), Map.class);
-        assertThat(map.get("age")).isNull();
-        assertThat(map.get("username")).isNull();
-        assertThat(map.get("name")).isNull();
-        assertThat(map.get("nickName")).isNull();
-
-
-
+        assertThat(result.getResponse().getContentAsString()).isEqualTo("");//빈 문자열
     }
 
     @Test
