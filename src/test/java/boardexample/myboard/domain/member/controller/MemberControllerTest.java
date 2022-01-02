@@ -32,8 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 class MemberControllerTest {
 
-    @Autowired
-    private WebApplicationContext ctx;
 
     @Autowired MockMvc mockMvc;
     @Autowired EntityManager em;
@@ -70,6 +68,7 @@ class MemberControllerTest {
 
     @Value("${jwt.access.header}")
     private String accessHeader;
+
     private static final String BEARER = "Bearer ";
 
     private String getAccessToken() throws Exception {
@@ -412,10 +411,12 @@ class MemberControllerTest {
 
         String accessToken = getAccessToken();
 
+        Long id = memberRepository.findAll().get(0).getId();
 
         //when
+
         MvcResult result = mockMvc.perform(
-                        get("/member/1")
+                        get("/member/"+id)
                                 .characterEncoding(StandardCharsets.UTF_8)
                                 .header(accessHeader, BEARER + accessToken))
                 .andExpect(status().isOk()).andReturn();
