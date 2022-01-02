@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
@@ -66,7 +67,8 @@ public class MemberController {
      * 내정보조회
      */
     @GetMapping("/member")
-    public ResponseEntity getMyInfo() throws Exception {
+    public ResponseEntity getMyInfo(HttpServletResponse response) throws Exception {
+
         MemberInfoDto info = memberService.getMyInfo();
         return new ResponseEntity(info, HttpStatus.OK);
     }

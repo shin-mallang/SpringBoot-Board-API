@@ -1,13 +1,19 @@
 package boardexample.myboard.domain.member.service;
 
 import boardexample.myboard.domain.member.Member;
+import boardexample.myboard.domain.member.Role;
 import boardexample.myboard.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.PostConstruct;
 
 @Service
 @RequiredArgsConstructor
@@ -26,4 +32,10 @@ public class LoginService implements UserDetailsService {
                 .build();
     }
 
+/*    @PostConstruct
+    @Transactional
+    public void init(){
+        PasswordEncoder delegatingPasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        memberRepository.save(Member.builder().username("username").password(delegatingPasswordEncoder.encode("1234567890")).name("신동훈").nickName("밥 잘먹는 동훈이").role(Role.USER).age(22).build());
+    }*/
 }

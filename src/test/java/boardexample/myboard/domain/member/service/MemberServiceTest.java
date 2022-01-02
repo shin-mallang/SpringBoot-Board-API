@@ -34,6 +34,7 @@ class MemberServiceTest {
     MemberRepository memberRepository;
 
     @Autowired MemberService memberService;
+
     @Autowired
     PasswordEncoder passwordEncoder;
 
