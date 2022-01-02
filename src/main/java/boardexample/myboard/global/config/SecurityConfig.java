@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers("/login", "/signUp","/","/a").permitAll()
+                .antMatchers("/login", "/signUp","/").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterAfter(jsonUsernamePasswordLoginFilter(), LogoutFilter.class);
