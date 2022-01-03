@@ -67,6 +67,8 @@ class CommentServiceTest {
         commentService.remove(commentId);
         clear();
 
+
+
         //then
         Comment findComment = commentService.findById(commentId);
         assertThat(findComment).isNotNull();
