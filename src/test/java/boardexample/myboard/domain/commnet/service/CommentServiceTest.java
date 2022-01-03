@@ -54,6 +54,7 @@ class CommentServiceTest {
     // DB와 화면에서는 지워지지 않고, "삭제된 댓글입니다"라고 표시
     @Test
     public void 댓글삭제_대댓글이_남아있는_경우() throws Exception {
+        
         //given
         Long commentId = saveComment();
         saveReComment(commentId);
