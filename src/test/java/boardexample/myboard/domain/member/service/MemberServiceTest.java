@@ -94,7 +94,7 @@ class MemberServiceTest {
         memberService.signUp(memberSignUpDto);
         clear();
 
-        //then
+        //then  TODO : 여기 MEMBEREXCEPTION으로 고치기
         Member member = memberRepository.findByUsername(memberSignUpDto.username()).orElseThrow(() -> new Exception("회원이 없습니다"));
         assertThat(member.getId()).isNotNull();
         assertThat(member.getUsername()).isEqualTo(memberSignUpDto.username());
@@ -113,6 +113,7 @@ class MemberServiceTest {
         clear();
 
         //when, then
+        //when, then TODO : MemberException으로 고쳐야 함
         assertThat(assertThrows(Exception.class, () -> memberService.signUp(memberSignUpDto)).getMessage()).isEqualTo("이미 존재하는 아이디입니다.");
 
     }
@@ -338,7 +339,7 @@ class MemberServiceTest {
         //given
         MemberSignUpDto memberSignUpDto = setMember();
 
-        //when, then
+        //when, then TODO : MemberException으로 고쳐야 함
         assertThat(assertThrows(Exception.class ,() -> memberService.withdraw(PASSWORD+"1")).getMessage()).isEqualTo("비밀번호가 일치하지 않습니다.");
 
     }

@@ -88,6 +88,7 @@ class MemberControllerTest {
     }
 
 
+
     @Test
     public void 회원가입_성공() throws Exception {
         //given
@@ -101,6 +102,9 @@ class MemberControllerTest {
         assertThat(member.getName()).isEqualTo(name);
         assertThat(memberRepository.findAll().size()).isEqualTo(1);
     }
+
+
+
 
     @Test
     public void 회원가입_실패_필드가_없음() throws Exception {
@@ -120,6 +124,8 @@ class MemberControllerTest {
 
         assertThat(memberRepository.findAll().size()).isEqualTo(0);
     }
+
+
 
 
     @Test
@@ -153,6 +159,8 @@ class MemberControllerTest {
         assertThat(memberRepository.findAll().size()).isEqualTo(1);
 
     }
+
+
 
     @Test
     public void 회원정보수정_원하는필드만변경_성공() throws Exception {
@@ -213,6 +221,10 @@ class MemberControllerTest {
         assertThat(passwordEncoder.matches(password, member.getPassword())).isFalse();
         assertThat(passwordEncoder.matches(password+"!@#@!#@!#", member.getPassword())).isTrue();
     }
+
+
+
+
     @Test
     public void 비밀번호수정_실패_검증비밀번호가_틀림() throws Exception {
         //given
@@ -241,6 +253,8 @@ class MemberControllerTest {
         assertThat(passwordEncoder.matches(password, member.getPassword())).isTrue();
         assertThat(passwordEncoder.matches(password+"!@#@!#@!#", member.getPassword())).isFalse();
     }
+
+
 
 
     @Test
@@ -273,6 +287,8 @@ class MemberControllerTest {
     }
 
 
+
+
     @Test
     public void 회원탈퇴_성공() throws Exception {
         //given
@@ -297,6 +313,9 @@ class MemberControllerTest {
         //then
         assertThrows(Exception.class, () -> memberRepository.findByUsername(username).orElseThrow(() -> new Exception("회원이 없습니다")));
     }
+
+
+
 
     @Test
     public void 회원탈퇴_실패_비밀번호틀림() throws Exception {
@@ -326,6 +345,8 @@ class MemberControllerTest {
 
     }
 
+
+
     @Test
     public void 회원탈퇴_실패_권한이없음() throws Exception {
         //given
@@ -351,6 +372,8 @@ class MemberControllerTest {
         Member member = memberRepository.findByUsername(username).orElseThrow(() -> new Exception("회원이 없습니다"));
         assertThat(member).isNotNull();
     }
+
+
 
 
     @Test
@@ -380,6 +403,8 @@ class MemberControllerTest {
 
     }
 
+
+
     @Test
     public void 내정보조회_실패_JWT없음() throws Exception {
         //given
@@ -397,6 +422,8 @@ class MemberControllerTest {
                 .andExpect(status().isForbidden());
 
     }
+
+
 
     /**
      * 회원정보조회 성공
@@ -431,6 +458,8 @@ class MemberControllerTest {
         assertThat(member.getNickName()).isEqualTo(map.get("nickName"));
     }
 
+
+
     @Test
     public void 회원정보조회_실패_없는회원조회() throws Exception {
         //given
@@ -447,9 +476,11 @@ class MemberControllerTest {
                                 .header(accessHeader, BEARER + accessToken))
                 .andExpect(status().isOk()).andReturn();
 
-        //then
+        //then TODO: 여기 오류남, 상태코드 600 반환함, 고치기
         assertThat(result.getResponse().getContentAsString()).isEqualTo("");//빈 문자열
     }
+
+
 
     @Test
     public void 회원정보조회_실패_JWT없음() throws Exception {
