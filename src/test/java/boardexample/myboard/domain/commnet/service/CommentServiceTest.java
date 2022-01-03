@@ -45,7 +45,6 @@ class CommentServiceTest {
 
         Long id = commentRepository.save(comment).getId();
         clear();
-
         return id;
     }
 
