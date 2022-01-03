@@ -2,6 +2,7 @@ package boardexample.myboard.domain.member.controller;
 
 import boardexample.myboard.domain.member.Member;
 import boardexample.myboard.domain.member.dto.MemberSignUpDto;
+import boardexample.myboard.domain.member.exception.MemberExceptionType;
 import boardexample.myboard.domain.member.repository.MemberRepository;
 import boardexample.myboard.domain.member.service.MemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -476,8 +477,9 @@ class MemberControllerTest {
                                 .header(accessHeader, BEARER + accessToken))
                 .andExpect(status().isOk()).andReturn();
 
-        //then TODO: 여기 오류남, 상태코드 600 반환함, 고치기
-        assertThat(result.getResponse().getContentAsString()).isEqualTo("");//빈 문자열
+        //then
+        Map<String, Integer> map = objectMapper.readValue(result.getResponse().getContentAsString(), Map.class);
+        assertThat(map.get("errorCode")).isEqualTo(MemberExceptionType.NOT_FOUND_MEMBER.getErrorCode());//빈 문자열
     }
 
 

@@ -5,6 +5,8 @@ import boardexample.myboard.domain.member.Role;
 import boardexample.myboard.domain.member.dto.MemberInfoDto;
 import boardexample.myboard.domain.member.dto.MemberSignUpDto;
 import boardexample.myboard.domain.member.dto.MemberUpdateDto;
+import boardexample.myboard.domain.member.exception.MemberException;
+import boardexample.myboard.domain.member.exception.MemberExceptionType;
 import boardexample.myboard.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -94,8 +96,8 @@ class MemberServiceTest {
         memberService.signUp(memberSignUpDto);
         clear();
 
-        //then  TODO : 여기 MEMBEREXCEPTION으로 고치기
-        Member member = memberRepository.findByUsername(memberSignUpDto.username()).orElseThrow(() -> new Exception("회원이 없습니다"));
+        //then
+        Member member = memberRepository.findByUsername(memberSignUpDto.username()).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
         assertThat(member.getId()).isNotNull();
         assertThat(member.getUsername()).isEqualTo(memberSignUpDto.username());
         assertThat(member.getName()).isEqualTo(memberSignUpDto.name());
@@ -113,8 +115,7 @@ class MemberServiceTest {
         clear();
 
         //when, then
-        //when, then TODO : MemberException으로 고쳐야 함
-        assertThat(assertThrows(Exception.class, () -> memberService.signUp(memberSignUpDto)).getMessage()).isEqualTo("이미 존재하는 아이디입니다.");
+        assertThat(assertThrows(MemberException.class, () -> memberService.signUp(memberSignUpDto)).getExceptionType()).isEqualTo(MemberExceptionType.ALREADY_EXIST_USERNAME);
 
     }
 
@@ -339,8 +340,8 @@ class MemberServiceTest {
         //given
         MemberSignUpDto memberSignUpDto = setMember();
 
-        //when, then TODO : MemberException으로 고쳐야 함
-        assertThat(assertThrows(Exception.class ,() -> memberService.withdraw(PASSWORD+"1")).getMessage()).isEqualTo("비밀번호가 일치하지 않습니다.");
+        //when, then
+        assertThat(assertThrows(MemberException.class ,() -> memberService.withdraw(PASSWORD+"1")).getExceptionType()).isEqualTo(MemberExceptionType.WRONG_PASSWORD);
 
     }
 
