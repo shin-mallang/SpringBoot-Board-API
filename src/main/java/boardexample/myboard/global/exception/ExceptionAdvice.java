@@ -15,14 +15,15 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(BaseException.class)
     public ResponseEntity handleBaseEx(BaseException exception){
-        log.info("BaseException errorMessage(): {}",exception.getExceptionType().getErrorMessage());
-        log.info("BaseException errorCode(): {}",exception.getExceptionType().getErrorCode());
+        log.error("BaseException errorMessage(): {}",exception.getExceptionType().getErrorMessage());
+        log.error("BaseException errorCode(): {}",exception.getExceptionType().getErrorCode());
 
         return new ResponseEntity(new ExceptionDto(exception.getExceptionType().getErrorCode()),exception.getExceptionType().getHttpStatus());
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity handleMemberEx(Exception exception){
+        exception.printStackTrace();
         return new ResponseEntity(HttpStatus.OK);
     }
 
