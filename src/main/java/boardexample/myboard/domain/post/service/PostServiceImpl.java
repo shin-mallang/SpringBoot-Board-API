@@ -10,6 +10,8 @@ import boardexample.myboard.domain.post.dto.PostInfoDto;
 import boardexample.myboard.domain.post.dto.PostPagingDto;
 import boardexample.myboard.domain.post.dto.PostSaveDto;
 import boardexample.myboard.domain.post.dto.PostUpdateDto;
+import boardexample.myboard.domain.post.exception.PostException;
+import boardexample.myboard.domain.post.exception.PostExceptionType;
 import boardexample.myboard.domain.post.repository.PostRepository;
 import boardexample.myboard.global.util.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -29,13 +31,24 @@ public class PostServiceImpl implements PostService{
         Post post = postSaveDto.toEntity();
 
         post.confirmWriter(memberRepository.findByUsername(SecurityUtil.getLoginUsername())
-                .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER)));
+                .orElseThrow(() -> new PostException(PostExceptionType.POST_NOT_POUND)));
 
         postRepository.save(post);
     }
 
     @Override
     public void update(Long id, PostUpdateDto postUpdateDto) {
+
+        Post post = postRepository.findById(id).orElseThrow(() ->
+                new PostException(PostExceptionType.POST_NOT_POUND));
+
+        if(!post.getWriter().getUsername().equals(SecurityUtil.getLoginUsername())){
+            throw new PostException(PostExceptionType.NOT_AUTHORITY_UPDATE_POST);
+        }
+
+        postUpdateDto.title().ifPresent(title -> post.updateTitle(title));
+        postUpdateDto.content().ifPresent(content -> post.updateContent(content));
+        // TODO : 파일 저장 해야함   postUpdateDto.uploadFile().ifPresent();
 
     }
 
