@@ -2,6 +2,7 @@ package boardexample.myboard.domain.member.dto;
 
 import boardexample.myboard.domain.member.Member;
 import lombok.Data;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -27,6 +28,7 @@ public record MemberSignUpDto(@NotBlank(message = "아이디를 입력해주세�
 
 
                               @NotNull(message = "나이를 입력해주세요")
+                              @Range(min = 0, max = 150)
                               Integer age) {
 
     public Member toEntity() {

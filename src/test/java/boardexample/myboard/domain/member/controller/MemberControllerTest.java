@@ -21,6 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.persistence.EntityManager;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
