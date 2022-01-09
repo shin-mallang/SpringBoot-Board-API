@@ -4,6 +4,7 @@ import boardexample.myboard.domain.member.repository.MemberRepository;
 import boardexample.myboard.domain.member.service.LoginService;
 import boardexample.myboard.global.jwt.filter.JwtAuthenticationProcessingFilter;
 import boardexample.myboard.global.jwt.service.JwtService;
+import boardexample.myboard.global.log.LogFilter;
 import boardexample.myboard.global.login.filter.JsonUsernamePasswordAuthenticationFilter;
 import boardexample.myboard.global.login.handler.LoginFailureHandler;
 import boardexample.myboard.global.login.handler.LoginSuccessJWTProvideHandler;
@@ -19,7 +20,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 
 @Configuration
 @RequiredArgsConstructor
@@ -48,6 +51,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilterAfter(jsonUsernamePasswordLoginFilter(), LogoutFilter.class);
         http.addFilterBefore(jwtAuthenticationProcessingFilter(), JsonUsernamePasswordAuthenticationFilter.class);
+
+        http.addFilterBefore(new LogFilter(), WebAsyncManagerIntegrationFilter.class);
 
     }
 
