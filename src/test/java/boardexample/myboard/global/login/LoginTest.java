@@ -117,7 +117,7 @@ public class LoginTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(map)))
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andReturn();
 
 
@@ -141,7 +141,7 @@ public class LoginTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(map)))
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andReturn();
 
 
@@ -190,7 +190,7 @@ public class LoginTest {
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .content(objectMapper.writeValueAsString(map)))
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andReturn();
 
         //then

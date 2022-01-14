@@ -319,7 +319,7 @@ public class JwtFilterAuthenticationTest {
         MvcResult result = mockMvc.perform(post(LOGIN_RUL)  //get인 경우 config에서 permitAll을 했기에 notFound
                         .header(refreshHeader, BEARER + refreshToken)
                         .header(accessHeader, BEARER + accessToken))
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andReturn();
 
         assertThat(result.getResponse().getContentAsString()).isEqualTo(LOGIN_FAIL_MESSAGE);

@@ -34,3 +34,6 @@ logging:
     boardexample:
       myboard: info
 
+
+file:
+  dir: D:\files
