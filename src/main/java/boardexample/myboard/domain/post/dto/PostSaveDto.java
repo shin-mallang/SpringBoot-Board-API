@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
-public record PostSaveDto(String title, String content, Optional<MultipartFile> multipartFile) {
+public record PostSaveDto(String title, String content, Optional<MultipartFile> uploadFile) {
 
 
 
