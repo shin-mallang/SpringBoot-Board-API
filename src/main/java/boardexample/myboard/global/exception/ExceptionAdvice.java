@@ -27,27 +27,29 @@ public class ExceptionAdvice {
 
 
 
+
     //@Valid 에서 예외 발생
     @ExceptionHandler(BindException.class)
     public ResponseEntity handleValidEx(BindException exception){
 
         log.error("@ValidException 발생! {}", exception.getMessage() );
-        return new ResponseEntity(new ExceptionDto(2000),HttpStatus.OK);
+        return new ResponseEntity(new ExceptionDto(2000),HttpStatus.BAD_REQUEST);
     }
 
+    //HttpMessageNotReadableException  => json 파싱 오류
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity httpMessageNotReadableExceptionEx(HttpMessageNotReadableException exception){
 
         log.error("Json을 파싱하는 과정에서 예외 발생! {}", exception.getMessage() );
-        return new ResponseEntity(new ExceptionDto(3000),HttpStatus.OK);
+        return new ResponseEntity(new ExceptionDto(3000),HttpStatus.BAD_REQUEST);
     }
 
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity handleMemberEx(Exception exception){
+    public ResponseEntity handleMemberEx(Exception exception) {
 
         exception.printStackTrace();
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
 
