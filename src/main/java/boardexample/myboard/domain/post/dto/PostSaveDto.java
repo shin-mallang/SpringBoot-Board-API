@@ -7,8 +7,6 @@ import java.util.Optional;
 
 public record PostSaveDto(String title, String content, Optional<MultipartFile> uploadFile) {
 
-
-
     public Post toEntity() {
         return Post.builder().title(title).content(content).build();
     }
