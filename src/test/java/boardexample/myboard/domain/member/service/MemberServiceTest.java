@@ -130,7 +130,6 @@ class MemberServiceTest {
         MemberSignUpDto memberSignUpDto5 = new MemberSignUpDto("username",passwordEncoder.encode(PASSWORD),"name","nickNAme",null);
 
 
-
         //when, then
 
         assertThrows(Exception.class, () -> memberService.signUp(memberSignUpDto1));

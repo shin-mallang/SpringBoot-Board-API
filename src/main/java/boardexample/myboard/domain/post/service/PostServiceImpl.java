@@ -1,6 +1,5 @@
 package boardexample.myboard.domain.post.service;
 
-import boardexample.myboard.domain.member.Member;
 import boardexample.myboard.domain.member.exception.MemberException;
 import boardexample.myboard.domain.member.exception.MemberExceptionType;
 import boardexample.myboard.domain.member.repository.MemberRepository;
@@ -19,9 +18,6 @@ import boardexample.myboard.global.util.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +28,7 @@ public class PostServiceImpl implements PostService{
     private final MemberRepository memberRepository;
     private final FileService fileService;
 
+
     @Override
     public void save(PostSaveDto postSaveDto) throws FileException {
         Post post = postSaveDto.toEntity();
@@ -39,19 +36,14 @@ public class PostServiceImpl implements PostService{
         post.confirmWriter(memberRepository.findByUsername(SecurityUtil.getLoginUsername())
                 .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER)));
 
-
-        MultipartFile file = postSaveDto.uploadFile().orElse(null);
-
-        if(file != null){
-            post.updateFilePath(fileService.save(file));
-        }
-
+        postSaveDto.uploadFile().ifPresent(
+                file ->  post.updateFilePath(fileService.save(file))
+        );
         postRepository.save(post);
     }
 
     @Override
     public void update(Long id, PostUpdateDto postUpdateDto) {
-
         Post post = postRepository.findById(id).orElseThrow(() ->
                 new PostException(PostExceptionType.POST_NOT_POUND));
 
@@ -60,14 +52,19 @@ public class PostServiceImpl implements PostService{
         postUpdateDto.title().ifPresent(post::updateTitle);
         postUpdateDto.content().ifPresent(post::updateContent);
 
-        MultipartFile file = postUpdateDto.uploadFile().orElse(null);
 
-        fileService.delete(post.getFilePath());//기존에 올린 파일 지우기
-        if(file != null){
-            post.updateFilePath(fileService.save(file));//새로 올린 파일 저장하기
+        if(post.getFilePath() !=null){
+            fileService.delete(post.getFilePath());//기존에 올린 파일 지우기
         }
 
+        postUpdateDto.uploadFile().ifPresentOrElse(
+                multipartFile ->  post.updateFilePath(fileService.save(multipartFile)),
+                () ->  post.updateFilePath(null)
+                );
+
     }
+
+
 
     @Override
     public void delete(Long id) {
@@ -78,17 +75,19 @@ public class PostServiceImpl implements PostService{
         checkAuthority(post,PostExceptionType.NOT_AUTHORITY_DELETE_POST);
 
 
-        fileService.delete(post.getFilePath());//기존에 올린 파일 지우기
+        if(post.getFilePath() !=null){
+            fileService.delete(post.getFilePath());//기존에 올린 파일 지우기
+        }
 
         postRepository.delete(post);
-
-
     }
+
 
     private void checkAuthority(Post post, PostExceptionType postExceptionType) {
         if(!post.getWriter().getUsername().equals(SecurityUtil.getLoginUsername()))
             throw new PostException(postExceptionType);
     }
+
 
     @Override
     public PostInfoDto getPostInfo(Long id) {
