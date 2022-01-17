@@ -33,8 +33,7 @@ public class PostServiceImpl implements PostService{
     public void save(PostSaveDto postSaveDto) throws FileException {
         Post post = postSaveDto.toEntity();
 
-        post.confirmWriter(memberRepository.findByUsername(SecurityUtil.getLoginUsername())
-                .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER)));
+        post.confirmWriter(memberRepository.findByUsername(SecurityUtil.getLoginUsername()).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER)));
 
         postSaveDto.uploadFile().ifPresent(
                 file ->  post.updateFilePath(fileService.save(file))
@@ -44,10 +43,9 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public void update(Long id, PostUpdateDto postUpdateDto) {
-        Post post = postRepository.findById(id).orElseThrow(() ->
-                new PostException(PostExceptionType.POST_NOT_POUND));
-
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostException(PostExceptionType.POST_NOT_POUND));
         checkAuthority(post,PostExceptionType.NOT_AUTHORITY_UPDATE_POST );
+
 
         postUpdateDto.title().ifPresent(post::updateTitle);
         postUpdateDto.content().ifPresent(post::updateContent);
@@ -87,7 +85,6 @@ public class PostServiceImpl implements PostService{
         if(!post.getWriter().getUsername().equals(SecurityUtil.getLoginUsername()))
             throw new PostException(postExceptionType);
     }
-
 
     @Override
     public PostInfoDto getPostInfo(Long id) {
