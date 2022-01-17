@@ -35,5 +35,6 @@ logging:
       myboard: info
 
 
+#TODO /하나 더 붙이기
 file:
-  dir: D:\files
+  dir: D:\files\

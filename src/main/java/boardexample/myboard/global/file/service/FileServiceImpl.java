@@ -22,7 +22,14 @@ public class FileServiceImpl implements FileService{
 
     @Override
     public String save(MultipartFile multipartFile)  {
-        String filePath = fileDir + UUID.randomUUID();
+
+        //TODO: 확장자 추가
+
+        int extIdx = multipartFile.getOriginalFilename().lastIndexOf(".");
+        String extension = multipartFile.getOriginalFilename().substring(extIdx+1);
+
+
+        String filePath = fileDir + UUID.randomUUID()+"."+extension;
         try {
             multipartFile.transferTo(new File(filePath));
         }catch (IOException e){
