@@ -2,17 +2,17 @@ package boardexample.myboard.domain.commnet.service;
 
 
 import boardexample.myboard.domain.commnet.Comment;
+import boardexample.myboard.domain.commnet.dto.CommentSaveDto;
+import boardexample.myboard.domain.commnet.dto.CommentUpdateDto;
 
 import java.util.List;
 
 public interface CommentService {
 
-    void save(Comment comment);
+    void save(Long postId , CommentSaveDto commentSaveDto);
+    void saveReComment(Long postId, Long parentId ,CommentSaveDto commentSaveDto);
 
-    Comment findById(Long id) throws Exception;
-
-
-    List<Comment> findAll();
+    void update(Long id, CommentUpdateDto commentUpdateDto);
 
     void remove(Long id) throws Exception;
 }
