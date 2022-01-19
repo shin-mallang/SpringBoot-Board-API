@@ -35,5 +35,5 @@ public interface PostService {
     /**
      * 검색 조건에 따른 게시글 리스트 조회 + 페이징
      */
-    PostPagingDto getPostList(int offset, int pageSize, PostSearchCondition postSearchCondition);
+    PostPagingDto getPostList(int page, int pageSize, PostSearchCondition postSearchCondition);
 }

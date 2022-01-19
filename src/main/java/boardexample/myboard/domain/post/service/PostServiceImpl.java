@@ -92,7 +92,7 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public PostPagingDto getPostList(int offset, int pageSize, PostSearchCondition postSearchCondition) {
+    public PostPagingDto getPostList(int page, int pageSize, PostSearchCondition postSearchCondition) {
         return null;
     }
 }

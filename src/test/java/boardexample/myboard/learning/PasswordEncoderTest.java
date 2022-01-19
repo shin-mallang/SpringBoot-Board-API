@@ -14,31 +14,27 @@ public class PasswordEncoderTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-
+    private static String PASSWROD = "신동훈ShinDongHun";
 
     @Test
     public void 패스워드_암호화() throws Exception {
-        //given
-        String password = "신동훈ShinDongHun";
 
         //when
-        String encodePassword = passwordEncoder.encode(password);
+        String encodePassword = passwordEncoder.encode(PASSWROD);
 
         //then
         assertThat(encodePassword).startsWith("{");
         assertThat(encodePassword).contains("{bcrypt}");
-        assertThat(encodePassword).isNotEqualTo(password);
+        assertThat(encodePassword).isNotEqualTo(PASSWROD);
 
     }
 
     @Test
     public void 패스워드_랜덤_암호화() throws Exception {
-        //given
-        String password = "신동훈ShinDongHun";
 
         //when
-        String encodePassword = passwordEncoder.encode(password);
-        String encodePassword2 = passwordEncoder.encode(password);
+        String encodePassword = passwordEncoder.encode(PASSWROD);
+        String encodePassword2 = passwordEncoder.encode(PASSWROD);
 
         //then
         assertThat(encodePassword).isNotEqualTo(encodePassword2);
@@ -48,14 +44,12 @@ public class PasswordEncoderTest {
 
     @Test
     public void 암호화된_비밀번호_매치() throws Exception {
-        //given
-        String password = "신동훈ShinDongHun";
 
         //when
-        String encodePassword = passwordEncoder.encode(password);
+        String encodePassword = passwordEncoder.encode(PASSWROD);
 
         //then
-        assertThat(passwordEncoder.matches(password, encodePassword)).isTrue();
+        assertThat(passwordEncoder.matches(PASSWROD, encodePassword)).isTrue();
 
     }
 }

@@ -56,17 +56,17 @@ public class JwtFilterAuthenticationTest {
     @Value("${jwt.refresh.header}")
     private String refreshHeader;
 
-
+    private static String KEY_USERNAME = "username";
+    private static String KEY_PASSWORD = "password";
     private static String USERNAME = "username";
     private static String PASSWORD = "123456789";
 
     private static String LOGIN_RUL = "/login";
-    private String username = "username";
 
 
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
     private static final String BEARER = "Bearer ";
-    private static String LOGIN_FAIL_MESSAGE = "fail";
+
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -85,11 +85,18 @@ public class JwtFilterAuthenticationTest {
     }
 
 
+
+    private Map getUsernamePasswordMap(String username, String password){
+        Map<String, String> map = new HashMap<>();
+        map.put(KEY_USERNAME, username);
+        map.put(KEY_PASSWORD, password);
+        return map;
+    }
+
+
     private Map getAccessAndRefreshToken() throws Exception {
 
-        Map<String, String> map = new HashMap<>();
-        map.put("username",USERNAME);
-        map.put("password",PASSWORD);
+        Map<String, String> map = getUsernamePasswordMap(USERNAME, PASSWORD);
 
         MvcResult result = mockMvc.perform(
                          post(LOGIN_RUL)
@@ -122,6 +129,8 @@ public class JwtFilterAuthenticationTest {
         mockMvc.perform(get(LOGIN_RUL+"123"))//login이 아닌 다른 임의의 주소
                 .andExpect(status().isForbidden());
     }
+
+
 
     /**
      * AccessToken : 유효,
@@ -197,6 +206,7 @@ public class JwtFilterAuthenticationTest {
     }
 
 
+
     /**
      * AccessToken : 유효
      * RefreshToken : 유효
@@ -223,6 +233,9 @@ public class JwtFilterAuthenticationTest {
         assertThat(subject).isEqualTo(ACCESS_TOKEN_SUBJECT);
         assertThat(responseRefreshToken).isNull();//refreshToken은 재발급되지 않음
     }
+
+
+
 
 
     /**
@@ -321,8 +334,6 @@ public class JwtFilterAuthenticationTest {
                         .header(accessHeader, BEARER + accessToken))
                 .andExpect(status().isBadRequest())
                 .andReturn();
-
-        assertThat(result.getResponse().getContentAsString()).isEqualTo(LOGIN_FAIL_MESSAGE);
 
     }
 

@@ -23,6 +23,7 @@ class FileServiceTest {
         return new MockMultipartFile("file", "file.jpg", "image/jpg", new FileInputStream("C:/Users/user/Desktop/tistory/diary.jpg"));
     }
 
+
     @Test
     public void 파일저장_성공() throws Exception {
         //given, when

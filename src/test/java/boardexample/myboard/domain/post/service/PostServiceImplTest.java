@@ -45,6 +45,10 @@ class PostServiceImplTest {
     private static final String USERNAME = "username";
     private static final String PASSWORD = "PASSWORD123@@@";
 
+    private String title = "제목";
+    private String content = "내용";
+
+
 
 
     private void clear(){
@@ -61,6 +65,9 @@ class PostServiceImplTest {
         return new MockMultipartFile("file", "file.jpg", "image/jpg", new FileInputStream("C:/Users/user/Desktop/tistory/diary.jpg"));
     }
 
+    private Post findPost() {
+        return em.createQuery("select p from Post p", Post.class).getSingleResult();
+    }
 
 
     @BeforeEach
@@ -86,8 +93,6 @@ class PostServiceImplTest {
     @Test
     public void 포스트_저장_성공_업로드_파일_없음() throws Exception {
         //given
-        String title = "제목";
-        String content = "내용";
         PostSaveDto postSaveDto = new PostSaveDto(title, content, Optional.empty());
 
 
@@ -97,7 +102,7 @@ class PostServiceImplTest {
 
 
         //then
-        Post findPost = em.createQuery("select p from Post p", Post.class).getSingleResult();
+        Post findPost = findPost();
         Post post = em.find(Post.class, findPost.getId());
         assertThat(post.getContent()).isEqualTo(content);
         assertThat(post.getWriter().getUsername()).isEqualTo(USERNAME);
@@ -111,9 +116,6 @@ class PostServiceImplTest {
     @Test
     public void 포스트_저장_성공_업로드_파일_있음() throws Exception {
         //given
-
-        String title = "제목";
-        String content = "내용";
         PostSaveDto postSaveDto = new PostSaveDto(title,content, Optional.ofNullable(getMockUploadFile()));
 
         //when
@@ -121,7 +123,7 @@ class PostServiceImplTest {
         clear();
 
         //then
-        Post findPost = em.createQuery("select p from Post p", Post.class).getSingleResult();
+        Post findPost = findPost();
         Post post = em.find(Post.class, findPost.getId());
         assertThat(post.getContent()).isEqualTo(content);
         assertThat(post.getWriter().getUsername()).isEqualTo(USERNAME);
@@ -137,9 +139,6 @@ class PostServiceImplTest {
     @Test
     public void 포스트_저장_실패_제목이나_내용이_없음() throws Exception {
         //given
-        String title = "제목";
-        String content = "내용";
-
         PostSaveDto postSaveDto = new PostSaveDto(null,content, Optional.empty());
         PostSaveDto postSaveDto2 = new PostSaveDto(title,null, Optional.empty());
 
@@ -156,14 +155,12 @@ class PostServiceImplTest {
     @Test
     public void 포스트_업데이트_성공_업로드파일_없음TO없음() throws Exception {
         //given
-        String title = "제목";
-        String content = "내용";
         PostSaveDto postSaveDto = new PostSaveDto(title,content, Optional.empty());
         postService.save(postSaveDto);
         clear();
 
         //when
-        Post findPost = em.createQuery("select p from Post p", Post.class).getSingleResult();
+        Post findPost = findPost();
         PostUpdateDto postUpdateDto = new PostUpdateDto(Optional.ofNullable("바꾼제목"),Optional.ofNullable("바꾼내용"), Optional.empty());
         postService.update(findPost.getId(),postUpdateDto);
         clear();
@@ -181,15 +178,13 @@ class PostServiceImplTest {
     @Test
     public void 포스트_업데이트_성공_업로드파일_없음TO있음() throws Exception {
         //given
-        String title = "제목";
-        String content = "내용";
         PostSaveDto postSaveDto = new PostSaveDto(title,content, Optional.empty());
         postService.save(postSaveDto);
         clear();
 
 
         //when
-        Post findPost = em.createQuery("select p from Post p", Post.class).getSingleResult();
+        Post findPost = findPost();
 
         PostUpdateDto postUpdateDto = new PostUpdateDto(Optional.ofNullable("바꾼제목"),Optional.ofNullable("바꾼내용"), Optional.ofNullable(getMockUploadFile()));
         postService.update(findPost.getId(),postUpdateDto);
@@ -212,12 +207,10 @@ class PostServiceImplTest {
     @Test
     public void 포스트_업데이트_성공_업로드파일_있음TO없음() throws Exception {
         //given
-        String title = "제목";
-        String content = "내용";
         PostSaveDto postSaveDto = new PostSaveDto(title,content, Optional.ofNullable(getMockUploadFile()));
         postService.save(postSaveDto);
 
-        Post findPost = em.createQuery("select p from Post p", Post.class).getSingleResult();
+        Post findPost = findPost();
         assertThat(findPost.getFilePath()).isNotNull();
         clear();
 
@@ -239,12 +232,10 @@ class PostServiceImplTest {
     @Test
     public void 포스트_업데이트_성공_업로드파일_있음TO있음() throws Exception {
         //given
-        String title = "제목";
-        String content = "내용";
         PostSaveDto postSaveDto = new PostSaveDto(title,content, Optional.empty());
         postService.save(postSaveDto);
 
-        Post findPost = em.createQuery("select p from Post p", Post.class).getSingleResult();
+        Post findPost = findPost();
         Post post = em.find(Post.class, findPost.getId());
         String filePath = post.getFilePath();
         clear();
@@ -285,8 +276,6 @@ class PostServiceImplTest {
 
     @Test
     public void 포스트_업데이트_실패_권한이없음() throws Exception {
-        String title = "제목";
-        String content = "내용";
         PostSaveDto postSaveDto = new PostSaveDto(title, content, Optional.empty());
 
         postService.save(postSaveDto);
@@ -295,7 +284,7 @@ class PostServiceImplTest {
 
         //when, then
         setAnotherAuthentication();
-        Post findPost = em.createQuery("select p from Post p", Post.class).getSingleResult();
+        Post findPost = findPost();
         PostUpdateDto postUpdateDto = new PostUpdateDto(Optional.ofNullable("바꾼제목"),Optional.ofNullable("바꾼내용"), Optional.empty());
 
 
@@ -308,14 +297,12 @@ class PostServiceImplTest {
 
     @Test
     public void 포스트삭제_성공() throws Exception {
-        String title = "제목";
-        String content = "내용";
         PostSaveDto postSaveDto = new PostSaveDto(title, content, Optional.empty());
         postService.save(postSaveDto);
         clear();
 
         //when
-        Post findPost = em.createQuery("select p from Post p", Post.class).getSingleResult();
+        Post findPost = findPost();
         postService.delete(findPost.getId());
 
         //then
@@ -327,8 +314,6 @@ class PostServiceImplTest {
 
     @Test
     public void 포스트삭제_실패() throws Exception {
-        String title = "제목";
-        String content = "내용";
         PostSaveDto postSaveDto = new PostSaveDto(title, content, Optional.empty());
 
         postService.save(postSaveDto);
@@ -336,8 +321,9 @@ class PostServiceImplTest {
 
         //when, then
         setAnotherAuthentication();
-        Post findPost = em.createQuery("select p from Post p", Post.class).getSingleResult();
+        Post findPost = findPost();
         assertThrows(PostException.class, ()-> postService.delete(findPost.getId()));
     }
+
 
 }
