@@ -19,6 +19,7 @@ import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -50,7 +51,6 @@ class JwtServiceTest {
 
     @BeforeEach
     public void init(){
-
         Member member = Member.builder().username(username).password("1234567890").name("Member1").nickName("NickName1").role(Role.USER).age(22).build();
         memberRepository.save(member);
         clear();
@@ -61,30 +61,42 @@ class JwtServiceTest {
         em.clear();
     }
 
+    private DecodedJWT getVerify(String token) {
+        return JWT.require(HMAC512(secret)).build().verify(token);
+    }
+
+
 
     @Test
     public void createAccessToken_AccessToken_발급() throws Exception {
-        //given
+        //given, when
         String accessToken = jwtService.createAccessToken(username);
 
-        DecodedJWT verify = JWT.require(Algorithm.HMAC512(secret)).build().verify(accessToken);
+        DecodedJWT verify = getVerify(accessToken);
+
         String subject = verify.getSubject();
         String findUsername = verify.getClaim(USERNAME_CLAIM).asString();
 
+        //then
         assertThat(findUsername).isEqualTo(username);
         assertThat(subject).isEqualTo(ACCESS_TOKEN_SUBJECT);
     }
 
+
+
     @Test
     public void createRefreshToken_RefreshToken_발급() throws Exception {
-        //given
+        //given, when
         String refreshToken = jwtService.createRefreshToken();
-        DecodedJWT verify = JWT.require(Algorithm.HMAC512(secret)).build().verify(refreshToken);
+        DecodedJWT verify = getVerify(refreshToken);
         String subject = verify.getSubject();
         String username = verify.getClaim(USERNAME_CLAIM).asString();
+
+        //then
         assertThat(subject).isEqualTo(REFRESH_TOKEN_SUBJECT);
         assertThat(username).isNull();
     }
+
 
     @Test
     public void updateRefreshToken_refreshToken_업데이트() throws Exception {
@@ -123,6 +135,8 @@ class JwtServiceTest {
         Member member = memberRepository.findByUsername(username).get();
         assertThat(member.getRefreshToken()).isNull();
     }
+
+
     @Test
     public void 토큰_유효성_검사() throws Exception {
         //given
@@ -132,9 +146,6 @@ class JwtServiceTest {
         //when, then
         assertThat(jwtService.isTokenValid(accessToken)).isTrue();
         assertThat(jwtService.isTokenValid(refreshToken)).isTrue();
-        assertThat(jwtService.isTokenValid(accessToken+"d")).isFalse();
-        assertThat(jwtService.isTokenValid(accessToken+"d")).isFalse();
-
     }
 
 
@@ -218,7 +229,7 @@ class JwtServiceTest {
 
         //then
         assertThat(extractAccessToken).isEqualTo(accessToken);
-        assertThat(JWT.require(Algorithm.HMAC512(secret)).build().verify(extractAccessToken).getClaim(USERNAME_CLAIM).asString()).isEqualTo(username);
+        assertThat(getVerify(extractAccessToken).getClaim(USERNAME_CLAIM).asString()).isEqualTo(username);
     }
 
 
@@ -236,7 +247,7 @@ class JwtServiceTest {
 
         //then
         assertThat(extractRefreshToken).isEqualTo(refreshToken);
-        assertThat(JWT.require(Algorithm.HMAC512(secret)).build().verify(extractRefreshToken).getSubject()).isEqualTo(REFRESH_TOKEN_SUBJECT);
+        assertThat(getVerify(extractRefreshToken).getSubject()).isEqualTo(REFRESH_TOKEN_SUBJECT);
     }
 
 
@@ -274,8 +285,5 @@ class JwtServiceTest {
         //then
         assertThat(extractUsername).isEqualTo(username);
     }
-
-
-
 
 }

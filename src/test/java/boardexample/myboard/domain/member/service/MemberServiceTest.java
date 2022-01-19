@@ -52,19 +52,20 @@ class MemberServiceTest {
     }
 
     private MemberSignUpDto setMember() throws Exception {
-        MemberSignUpDto memberSignUpDto1 = makeMemberSignUpDto();
-        memberService.signUp(memberSignUpDto1);
+        MemberSignUpDto memberSignUpDto = makeMemberSignUpDto();
+        memberService.signUp(memberSignUpDto);
         clear();
         SecurityContext emptyContext = SecurityContextHolder.createEmptyContext();
 
         emptyContext.setAuthentication(new UsernamePasswordAuthenticationToken(User.builder()
-                .username(memberSignUpDto1.username())
-                .password(memberSignUpDto1.password())
+                .username(memberSignUpDto.username())
+                .password(memberSignUpDto.password())
                 .roles(Role.USER.name())
                 .build(),
                 null, null));
+
         SecurityContextHolder.setContext(emptyContext);
-        return memberSignUpDto1;
+        return memberSignUpDto;
     }
 
 
@@ -337,7 +338,7 @@ class MemberServiceTest {
     @Test
     public void 회원탈퇴_실패_비밀번호가_일치하지않음() throws Exception {
         //given
-        MemberSignUpDto memberSignUpDto = setMember();
+        setMember();
 
         //when, then
         assertThat(assertThrows(MemberException.class ,() -> memberService.withdraw(PASSWORD+"1")).getExceptionType()).isEqualTo(MemberExceptionType.WRONG_PASSWORD);
