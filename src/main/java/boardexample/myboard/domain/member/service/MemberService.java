@@ -19,7 +19,7 @@ public interface MemberService {
 
     void update(MemberUpdateDto memberUpdateDto) throws Exception;
 
-    void updatePassword(String checkPassword, String toBePassword) throws Exception;
+    void updatePassword(String asIsPassword, String toBePassword) throws Exception;
 
     void withdraw(String checkPassword) throws Exception;
 

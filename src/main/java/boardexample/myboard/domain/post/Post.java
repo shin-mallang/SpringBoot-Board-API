@@ -63,6 +63,7 @@ public class Post extends BaseTimeEntity {
         this.writer = writer;
         writer.addPost(this);
     }
+
     public void addComment(Comment comment){
         //comment의 Post 설정은 comment에서 함
         commentList.add(comment);

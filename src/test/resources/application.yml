@@ -1,14 +1,13 @@
 spring:
 
-
   profiles:
     include: jwt
 
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/jpa
     username: sa
-    password: 1
+
+
   data:
     web:
       pageable:
@@ -35,10 +34,15 @@ spring:
         default_batch_fetch_size: 100 #배치 사이즈 (Collection 조회 최적화)
 
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
 
 
     open-in-view: false #OSIV 사용하지 않기
+
+
+  h2:
+    console:
+      enabled: true
 
 
 
