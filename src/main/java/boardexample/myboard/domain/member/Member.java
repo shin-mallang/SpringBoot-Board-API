@@ -24,23 +24,31 @@ import static javax.persistence.GenerationType.*;
 @Builder
 public class Member extends BaseTimeEntity {
 
+
     @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "member_id")
     private Long id; //primary Key
+
+
 
     @Column(nullable = false, length = 30, unique = true)
     private String username;//아이디
 
     private String password;//비밀번호
 
+
     @Column(nullable = false, length = 30)
     private String name;//이름(실명)
+
 
     @Column(nullable = false, length = 30)
     private String nickName;//별명
 
+
     @Column(nullable = false, length = 30)
     private Integer age;//나이
+
+
 
     @Enumerated(STRING)
     @Column(nullable = false, length = 30)
@@ -49,6 +57,7 @@ public class Member extends BaseTimeEntity {
 
     @Column(length = 1000)
     private String refreshToken;//RefreshToken
+
 
 
     //== 회원탈퇴 -> 작성한 게시물, 댓글 모두 삭제 ==//
@@ -104,19 +113,29 @@ public class Member extends BaseTimeEntity {
     }
 
 
-
-    //== 패스워드 암호화 ==//
+    /**
+     * 패스워드 암호화
+     */
     public void encodePassword(PasswordEncoder passwordEncoder){
         this.password = passwordEncoder.encode(password);
     }
 
 
+    /**
+     * 패스워드 일치하는지 확인
+     * @param passwordEncoder 패스워드 인코더
+     * @param checkPassword 검사할 비밀번호
+     * @return
+     */
     public boolean matchPassword(PasswordEncoder passwordEncoder, String checkPassword){
         return passwordEncoder.matches(checkPassword, getPassword());
     }
 
 
+    //== 권한 부여 ==//
     public void addUserAuthority() {
         this.role = Role.USER;
     }
+
+
 }

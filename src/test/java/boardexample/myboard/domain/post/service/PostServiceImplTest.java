@@ -135,7 +135,6 @@ class PostServiceImplTest {
 
 
 
-
     @Test
     public void 포스트_저장_실패_제목이나_내용이_없음() throws Exception {
         //given
