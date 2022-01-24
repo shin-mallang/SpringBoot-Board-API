@@ -61,9 +61,11 @@ public class Member extends BaseTimeEntity {
 
 
     //== 회원탈퇴 -> 작성한 게시물, 댓글 모두 삭제 ==//
+    @Builder.Default
     @OneToMany(mappedBy = "writer", cascade = ALL, orphanRemoval = true)
     private List<Post> postList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "writer", cascade = ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
