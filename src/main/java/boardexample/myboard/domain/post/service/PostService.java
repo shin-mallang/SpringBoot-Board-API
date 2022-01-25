@@ -6,6 +6,7 @@ import boardexample.myboard.domain.post.dto.PostPagingDto;
 import boardexample.myboard.domain.post.dto.PostSaveDto;
 import boardexample.myboard.domain.post.dto.PostUpdateDto;
 import boardexample.myboard.global.file.exception.FileException;
+import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;
 
@@ -35,5 +36,5 @@ public interface PostService {
     /**
      * 검색 조건에 따른 게시글 리스트 조회 + 페이징
      */
-    PostPagingDto getPostList(int page, int pageSize, PostSearchCondition postSearchCondition);
+    PostPagingDto getPostList(Pageable pageable, PostSearchCondition postSearchCondition);
 }

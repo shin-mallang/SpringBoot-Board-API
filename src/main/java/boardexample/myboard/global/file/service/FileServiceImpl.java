@@ -17,13 +17,9 @@ public class FileServiceImpl implements FileService{
     private String fileDir;
 
 
-
-    //TODO : 테스트코드 작성해야 함
-
     @Override
     public String save(MultipartFile multipartFile)  {
 
-        //TODO: 확장자 추가
 
         int extIdx = multipartFile.getOriginalFilename().lastIndexOf(".");
         String extension = multipartFile.getOriginalFilename().substring(extIdx+1);

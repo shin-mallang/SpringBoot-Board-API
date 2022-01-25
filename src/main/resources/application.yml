@@ -49,7 +49,7 @@ logging:
     org:
       apache:
         coyote:
-          http11: OFF #debug
+          http11: debug #debug
 
       hiberante:
         SQL: debug

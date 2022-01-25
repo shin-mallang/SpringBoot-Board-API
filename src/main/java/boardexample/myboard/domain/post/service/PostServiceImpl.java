@@ -1,7 +1,5 @@
 package boardexample.myboard.domain.post.service;
 
-import boardexample.myboard.domain.commnet.Comment;
-import boardexample.myboard.domain.commnet.dto.ReCommentInfoDto;
 import boardexample.myboard.domain.member.exception.MemberException;
 import boardexample.myboard.domain.member.exception.MemberExceptionType;
 import boardexample.myboard.domain.member.repository.MemberRepository;
@@ -18,12 +16,9 @@ import boardexample.myboard.global.file.exception.FileException;
 import boardexample.myboard.global.file.service.FileService;
 import boardexample.myboard.global.util.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static boardexample.myboard.domain.post.exception.PostExceptionType.POST_NOT_POUND;
 
@@ -37,6 +32,9 @@ public class PostServiceImpl implements PostService{
     private final FileService fileService;
 
 
+    /**
+     * 게시글 저장
+     */
     @Override
     public void save(PostSaveDto postSaveDto) throws FileException {
         Post post = postSaveDto.toEntity();
@@ -50,6 +48,9 @@ public class PostServiceImpl implements PostService{
     }
 
 
+    /**
+     * 게시글 수정
+     */
     @Override
     public void update(Long id, PostUpdateDto postUpdateDto) {
         Post post = postRepository.findById(id).orElseThrow(() -> new PostException(POST_NOT_POUND));
@@ -72,6 +73,9 @@ public class PostServiceImpl implements PostService{
     }
 
 
+    /**
+     * 게시글 삭제
+     */
     @Override
     public void delete(Long id) {
 
@@ -120,8 +124,13 @@ public class PostServiceImpl implements PostService{
     }
 
 
+
+    /**
+     * 게시글 검색
+     */
     @Override
-    public PostPagingDto getPostList(int page, int pageSize, PostSearchCondition postSearchCondition) {
-        return null;
+    public PostPagingDto getPostList(Pageable pageable, PostSearchCondition postSearchCondition) {
+
+        return new PostPagingDto(postRepository.search(postSearchCondition, pageable));
     }
 }
