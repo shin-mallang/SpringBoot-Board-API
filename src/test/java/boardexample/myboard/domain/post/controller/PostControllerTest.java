@@ -7,6 +7,7 @@ import boardexample.myboard.domain.member.service.MemberService;
 import boardexample.myboard.domain.post.Post;
 import boardexample.myboard.domain.post.repository.PostRepository;
 import boardexample.myboard.domain.post.service.PostService;
+import boardexample.myboard.global.file.service.FileService;
 import boardexample.myboard.global.jwt.service.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
@@ -29,6 +30,7 @@ import org.springframework.util.MultiValueMap;
 
 import javax.persistence.EntityManager;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -264,7 +266,54 @@ class PostControllerTest {
 */
 
         //then
+        String filePath = postRepository.findAll().get(0).getFilePath();
+        Assertions.assertThat(filePath).isNotNull();
+        Assertions.assertThat(new File(filePath).delete()).isTrue();
+
+    }
+
+    /**
+     게시글 수정
+     */
+    @Autowired private FileService fileService;
+    @Test
+    public void 게시글_수정_업로드파일제거_성공() throws Exception {
+        //given
+        Post post = Post.builder().title("수정전제목").content("수정전내용").build();
+        post.confirmWriter(member);
+        String path = fileService.save(getMockUploadFile());
+        post.updateFilePath(path);
+        Post savePost = postRepository.save(post);
+
         Assertions.assertThat(postRepository.findAll().get(0).getFilePath()).isNotNull();
+
+
+        MockMultipartFile mockUploadFile = getMockUploadFile();
+
+
+        //when
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+
+        final String UPDATE_CONTENT = "내용";
+        final String UPDATE_TITlE = "제목";
+        map.add("title", UPDATE_TITlE);
+        map.add("content", UPDATE_CONTENT);
+
+        //when
+        mockMvc.perform(
+                        put("/post/"+savePost.getId())
+                                .header("Authorization", "Bearer "+ getAccessToken())
+                                .contentType(MediaType.MULTIPART_FORM_DATA)
+                                .params(map))
+                .andExpect(status().isOk());
+
+
+        //then
+        Assertions.assertThat(postRepository.findAll().get(0).getContent()).isEqualTo(UPDATE_CONTENT);
+        Assertions.assertThat(postRepository.findAll().get(0).getTitle()).isEqualTo(UPDATE_TITlE);
+        Assertions.assertThat(postRepository.findAll().get(0).getFilePath()).isNull();
+
     }
 
 

@@ -38,7 +38,6 @@ public class PostController {
                        @ModelAttribute PostUpdateDto postUpdateDto){
 
 
-        System.out.println(postUpdateDto.uploadFile().get().getOriginalFilename());
         postService.update(postId, postUpdateDto);
     }
 
