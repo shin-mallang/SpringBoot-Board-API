@@ -37,6 +37,8 @@ public class PostController {
     public void update(@PathVariable("postId") Long postId,
                        @ModelAttribute PostUpdateDto postUpdateDto){
 
+
+        System.out.println(postUpdateDto.uploadFile().get().getOriginalFilename());
         postService.update(postId, postUpdateDto);
     }
 

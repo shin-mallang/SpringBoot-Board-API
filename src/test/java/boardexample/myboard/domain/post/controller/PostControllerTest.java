@@ -20,7 +20,9 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -75,7 +77,8 @@ class PostControllerTest {
 
 
     private MockMultipartFile getMockUploadFile() throws IOException {
-        return new MockMultipartFile("file", "file.jpg", "image/jpg", new FileInputStream("C:/Users/user/Desktop/tistory/diary.jpg"));
+        //TODO : name이 중요
+        return new MockMultipartFile("uploadFile", "file.jpg", "image/jpg", new FileInputStream("C:/Users/user/Desktop/tistory/diary.jpg"));
     }
 
     /**
@@ -229,28 +232,39 @@ class PostControllerTest {
      */
     @Test
     public void 게시글_수정_업로드파일추가_성공() throws Exception {
-       /* //given
+        //given
         Post post = Post.builder().title("수정전제목").content("수정전내용").build();
         post.confirmWriter(member);
         Post savePost = postRepository.save(post);
 
         MockMultipartFile mockUploadFile = getMockUploadFile();
-        System.out.println(mockUploadFile.getOriginalFilename());
-        System.out.println(mockUploadFile.getOriginalFilename());
+
 
         //when
 
-        mockMvc.perform(multipart("/post/"+savePost.getId())
+        MockMultipartHttpServletRequestBuilder requestBuilder = multipart("/post/" + savePost.getId());
+        requestBuilder.with(request -> {
+            request.setMethod(HttpMethod.PUT.name());
+            return request;
+        });
+
+        mockMvc.perform(requestBuilder
+                        .file(getMockUploadFile())
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .header("Authorization", "Bearer " + getAccessToken()))
+                .andExpect(status().isOk());
+
+        /*mockMvc.perform(multipart("/post/"+savePost.getId())
 
                                 .file(getMockUploadFile())
                                 .header("Authorization", "Bearer "+ getAccessToken())
                                 .contentType(MediaType.MULTIPART_FORM_DATA)
                                )
                 .andExpect(status().isOk());
-
+*/
 
         //then
-        Assertions.assertThat(postRepository.findAll().get(0).getFilePath()).isNotNull();*/
+        Assertions.assertThat(postRepository.findAll().get(0).getFilePath()).isNotNull();
     }
 
 
