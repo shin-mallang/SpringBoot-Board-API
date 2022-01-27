@@ -3,10 +3,10 @@ package boardexample.myboard.domain.post.controller;
 import boardexample.myboard.domain.member.Member;
 import boardexample.myboard.domain.member.Role;
 import boardexample.myboard.domain.member.repository.MemberRepository;
-import boardexample.myboard.domain.member.service.MemberService;
 import boardexample.myboard.domain.post.Post;
+import boardexample.myboard.domain.post.dto.PostInfoDto;
+import boardexample.myboard.domain.post.dto.PostPagingDto;
 import boardexample.myboard.domain.post.repository.PostRepository;
-import boardexample.myboard.domain.post.service.PostService;
 import boardexample.myboard.global.file.service.FileService;
 import boardexample.myboard.global.jwt.service.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +14,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
@@ -21,22 +22,19 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import javax.persistence.EntityManager;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -398,20 +396,76 @@ class PostControllerTest {
     }
 
 
-
     /**
      * 게시글 조회
      */
     @Test
     public void 게시글_조회() throws Exception {
 
+        //given
+        Member newMember = memberRepository.save(Member.builder().username("newMEmber1123").password("!23123124421").name("123213").nickName("123").age(22).role(Role.USER).build());
+        Post post = Post.builder().title("title").content("content").build();
+        post.confirmWriter(newMember);
+        Post savePost = postRepository.save(post);
+
+        //when
+        MvcResult result = mockMvc.perform(
+                get("/post/" + savePost.getId())
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header("Authorization", "Bearer " + getAccessToken())
+        ).andExpect(status().isOk()).andReturn();
+
+        PostInfoDto postInfoDto = objectMapper.readValue(result.getResponse().getContentAsString(), PostInfoDto.class);
+
+
+        //then
+        Assertions.assertThat(postInfoDto.getPostId()).isEqualTo(post.getId());
+        Assertions.assertThat(postInfoDto.getContent()).isEqualTo(post.getContent());
+        Assertions.assertThat(postInfoDto.getTitle()).isEqualTo(post.getTitle());
+
 
     }
 
 
+    @Value("${spring.data.web.pageable.default-page-size}")
+    private int pageCount;
 
     /**
      * 게시글 검색
      */
+    @Test
+    public void 게시글_검색() throws Exception {
 
+        //given
+        Member newMember = memberRepository.save(Member.builder().username("newMEmber1123").password("!23123124421").name("123213").nickName("123").age(22).role(Role.USER).build());
+
+
+
+
+        final int POST_COUNT = 50;
+        for(int i = 1; i<= POST_COUNT; i++ ){
+            Post post = Post.builder().title("title"+ i).content("content"+i).build();
+            post.confirmWriter(newMember);
+            postRepository.save(post);
+        }
+
+        clear();
+
+
+
+        //when
+        MvcResult result = mockMvc.perform(
+                get("/post")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header("Authorization", "Bearer " + getAccessToken())
+        ).andExpect(status().isOk()).andReturn();
+
+        //then
+        PostPagingDto postList = objectMapper.readValue(result.getResponse().getContentAsString(), PostPagingDto.class);
+
+        assertThat(postList.getTotalElementCount()).isEqualTo(POST_COUNT);
+        assertThat(postList.getCurrentPageElementCount()).isEqualTo(pageCount);
+        assertThat(postList.getSimpleLectureDtoList().get(0).getContent()).isEqualTo("content50");
+
+    }
 }

@@ -2,12 +2,14 @@ package boardexample.myboard.domain.post.dto;
 
 import boardexample.myboard.domain.post.Post;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class PostPagingDto {
 
     private int totalPageCount;//총 몇페이지가 존재하는지

@@ -41,6 +41,7 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
                 .leftJoin(post.writer, member)
 
                 .fetchJoin()
+                                    .orderBy(post.createdDate.desc())//최신 날짜부터
                                     .offset(pageable.getOffset())
                                     .limit(pageable.getPageSize())
                                     .fetch(); //Count 쿼리 발생 X
