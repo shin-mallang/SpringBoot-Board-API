@@ -27,7 +27,6 @@ public class ExceptionAdvice {
 
 
 
-
     //@Valid 에서 예외 발생
     @ExceptionHandler(BindException.class)
     public ResponseEntity handleValidEx(BindException exception){
@@ -45,8 +44,13 @@ public class ExceptionAdvice {
     }
 
 
+
+
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity handleMemberEx(Exception exception) {
+
 
         exception.printStackTrace();
         return new ResponseEntity(HttpStatus.BAD_REQUEST);

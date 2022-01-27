@@ -6,6 +6,7 @@ import boardexample.myboard.domain.commnet.dto.ReCommentInfoDto;
 import boardexample.myboard.domain.member.dto.MemberInfoDto;
 import boardexample.myboard.domain.post.Post;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data
+@NoArgsConstructor
 public class PostInfoDto {
 
 

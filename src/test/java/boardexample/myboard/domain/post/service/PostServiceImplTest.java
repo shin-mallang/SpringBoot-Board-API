@@ -9,7 +9,9 @@ import boardexample.myboard.domain.member.dto.MemberSignUpDto;
 import boardexample.myboard.domain.member.repository.MemberRepository;
 import boardexample.myboard.domain.member.service.MemberService;
 import boardexample.myboard.domain.post.Post;
+import boardexample.myboard.domain.post.cond.PostSearchCondition;
 import boardexample.myboard.domain.post.dto.PostInfoDto;
+import boardexample.myboard.domain.post.dto.PostPagingDto;
 import boardexample.myboard.domain.post.dto.PostSaveDto;
 import boardexample.myboard.domain.post.dto.PostUpdateDto;
 import boardexample.myboard.domain.post.exception.PostException;
@@ -19,6 +21,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -30,7 +34,9 @@ import javax.persistence.EntityManager;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -108,8 +114,6 @@ class PostServiceImplTest {
     }
 
 
-
-
     @Test
     public void 포스트_저장_성공_업로드_파일_없음() throws Exception {
         //given
@@ -128,9 +132,6 @@ class PostServiceImplTest {
         assertThat(post.getWriter().getUsername()).isEqualTo(USERNAME);
         assertThat(post.getFilePath()).isNull();
     }
-
-
-
 
 
     @Test
@@ -154,7 +155,6 @@ class PostServiceImplTest {
     }
 
 
-
     @Test
     public void 포스트_저장_실패_제목이나_내용이_없음() throws Exception {
         //given
@@ -167,8 +167,6 @@ class PostServiceImplTest {
         assertThrows(Exception.class, () -> postService.save(postSaveDto2));
 
     }
-
-
 
 
     @Test
@@ -191,7 +189,6 @@ class PostServiceImplTest {
         assertThat(post.getFilePath()).isNull();
 
     }
-
 
 
     @Test
@@ -221,8 +218,6 @@ class PostServiceImplTest {
     }
 
 
-
-
     @Test
     public void 포스트_업데이트_성공_업로드파일_있음TO없음() throws Exception {
         //given
@@ -244,8 +239,6 @@ class PostServiceImplTest {
         assertThat(findPost.getWriter().getUsername()).isEqualTo(USERNAME);
         assertThat(findPost.getFilePath()).isNull();
     }
-
-
 
 
     @Test
@@ -273,9 +266,6 @@ class PostServiceImplTest {
         //올린 파일 삭제
     }
 
-
-
-
     private void setAnotherAuthentication() throws Exception {
         memberService.signUp(new MemberSignUpDto(USERNAME+"123",PASSWORD,"name","nickName",22));
         SecurityContext emptyContext = SecurityContextHolder.createEmptyContext();
@@ -291,7 +281,6 @@ class PostServiceImplTest {
         SecurityContextHolder.setContext(emptyContext);
         clear();
     }
-
 
     @Test
     public void 포스트_업데이트_실패_권한이없음() throws Exception {
@@ -311,9 +300,6 @@ class PostServiceImplTest {
 
     }
 
-
-
-
     @Test
     public void 포스트삭제_성공() throws Exception {
         PostSaveDto postSaveDto = new PostSaveDto(title, content, Optional.empty());
@@ -329,8 +315,6 @@ class PostServiceImplTest {
         assertThat(findPosts.size()).isEqualTo(0);
     }
 
-
-
     @Test
     public void 포스트삭제_실패() throws Exception {
         PostSaveDto postSaveDto = new PostSaveDto(title, content, Optional.empty());
@@ -345,22 +329,20 @@ class PostServiceImplTest {
     }
 
 
-
-
     @Test
     public void 포스트_조회() throws Exception {
-        //given
-        /**
-         * MEMBER 저장
-         */
-
         Member member1 = memberRepository.save(Member.builder().username("username1").password("1234567890").name("USER1").nickName("밥 잘먹는 동훈이1").role(Role.USER).age(22).build());
-        memberRepository.save(Member.builder().username("username2").password("1234567890").name("USER1").nickName("밥 잘먹는 동훈이2").role(Role.USER).age(22).build());
-        memberRepository.save(Member.builder().username("username3").password("1234567890").name("USER1").nickName("밥 잘먹는 동훈이3").role(Role.USER).age(22).build());
-        memberRepository.save(Member.builder().username("username4").password("1234567890").name("USER1").nickName("밥 잘먹는 동훈이4").role(Role.USER).age(22).build());
-        memberRepository.save(Member.builder().username("username5").password("1234567890").name("USER1").nickName("밥 잘먹는 동훈이5").role(Role.USER).age(22).build());
+        Member member2 = memberRepository.save(Member.builder().username("username2").password("1234567890").name("USER1").nickName("밥 잘먹는 동훈이2").role(Role.USER).age(22).build());
+        Member member3 = memberRepository.save(Member.builder().username("username3").password("1234567890").name("USER1").nickName("밥 잘먹는 동훈이3").role(Role.USER).age(22).build());
+        Member member4 = memberRepository.save(Member.builder().username("username4").password("1234567890").name("USER1").nickName("밥 잘먹는 동훈이4").role(Role.USER).age(22).build());
+        Member member5 = memberRepository.save(Member.builder().username("username5").password("1234567890").name("USER1").nickName("밥 잘먹는 동훈이5").role(Role.USER).age(22).build());
 
-        Member member = memberRepository.findById(1L).orElse(null);
+        Map<Integer, Long> memberIdMap = new HashMap<>();
+        memberIdMap.put(1,member1.getId());
+        memberIdMap.put(2,member2.getId());
+        memberIdMap.put(3,member4.getId());
+        memberIdMap.put(4,member4.getId());
+        memberIdMap.put(5,member5.getId());
 
 
 
@@ -382,8 +364,7 @@ class PostServiceImplTest {
 
         for(int i = 1; i<=COMMENT_COUNT; i++ ){
             Comment comment = Comment.builder().content("댓글" + i).build();
-
-            comment.confirmWriter(memberRepository.findById((long) (i % 3 + 1)).orElse(null));
+            comment.confirmWriter(memberRepository.findById(memberIdMap.get(i % 3 + 1)).orElse(null));
             comment.confirmPost(post);
             commentRepository.save(comment);
         }
@@ -401,7 +382,7 @@ class PostServiceImplTest {
 
             for(int i = 1; i<=20; i++ ){
                 Comment recomment = Comment.builder().content("대댓글" + i).build();
-                recomment.confirmWriter(memberRepository.findById((long) (i % 5 + 1)).orElse(null));
+                recomment.confirmWriter(memberRepository.findById(memberIdMap.get(i % 3 + 1)).orElse(null));
 
                 recomment.confirmPost(comment.getPost());
                 recomment.confirmParent(comment);
@@ -411,10 +392,16 @@ class PostServiceImplTest {
         });
 
 
+
         clear();
+
+
+
 
         //when
         PostInfoDto postInfo = postService.getPostInfo(post.getId());
+
+
 
         //then
         assertThat(postInfo.getPostId()).isEqualTo(post.getId());
@@ -430,11 +417,224 @@ class PostServiceImplTest {
         assertThat(postInfo.getCommentInfoDtoList().size()).isEqualTo(COMMENT_COUNT);
         assertThat(recommentCount).isEqualTo(COMMENT_PER_RECOMMENT_COUNT * COMMENT_COUNT);
 
-
-
-
-
     }
 
+    @Test
+    public void 포스트_검색_조건없음() throws Exception {
+        //given
+
+        /**
+         * MEMBER 저장
+         */
+
+        Member member1 = memberRepository.save(Member.builder().username("username1").password("1234567890").name("USER1").nickName("밥 잘먹는 동훈이1").role(Role.USER).age(22).build());
+
+
+
+        /**
+         * Post 생성
+         */
+        final int POST_COUNT = 50;
+        for(int i = 1; i<= POST_COUNT; i++ ){
+            Post post = Post.builder().title("게시글"+ i).content("내용"+i).build();
+            post.confirmWriter(member1);
+            postRepository.save(post);
+        }
+
+        clear();
+
+
+
+        //when
+        final int PAGE = 0;
+        final int SIZE = 20;
+        PageRequest pageRequest = PageRequest.of(PAGE, SIZE);
+
+        PostSearchCondition postSearchCondition = new PostSearchCondition();
+
+        PostPagingDto postList = postService.getPostList(pageRequest, postSearchCondition);
+
+
+        //then
+        assertThat(postList.getTotalElementCount()).isEqualTo(POST_COUNT);
+
+        assertThat(postList.getTotalPageCount()).isEqualTo((POST_COUNT % SIZE == 0)
+                                                                        ? POST_COUNT/SIZE
+                                                                        : POST_COUNT/SIZE + 1);
+
+        assertThat(postList.getCurrentPageNum()).isEqualTo(PAGE);
+        assertThat(postList.getCurrentPageElementCount()).isEqualTo(SIZE);
+    }
+
+    @Test
+    public void 포스트_검색_제목일치() throws Exception {
+        //given
+        /**
+         * MEMBER 저장
+         */
+
+        Member member1 = memberRepository.save(Member.builder().username("username1").password("1234567890").name("USER1").nickName("밥 잘먹는 동훈이1").role(Role.USER).age(22).build());
+
+
+        /**
+         * 일반 POST 생성
+         */
+        final int DEFAULT_POST_COUNT = 100;
+        for(int i = 1; i<=DEFAULT_POST_COUNT; i++ ){
+            Post post = Post.builder().title("게시글"+ i).content("내용"+i).build();
+            post.confirmWriter(member1);
+            postRepository.save(post);
+        }
+
+
+        /**
+         * 제목에 AAA가 들어간 POST 생성
+         */
+        final String SEARCH_TITLE_STR = "AAA";
+
+        final int COND_POST_COUNT = 100;
+
+        for(int i = 1; i<=COND_POST_COUNT; i++ ){
+            Post post = Post.builder().title(SEARCH_TITLE_STR+ i).content("내용"+i).build();
+            post.confirmWriter(member1);
+            postRepository.save(post);
+        }
+        clear();
+
+
+
+        //when
+        final int PAGE = 2;
+        final int SIZE = 20;
+        PageRequest pageRequest = PageRequest.of(PAGE, SIZE);
+
+        PostSearchCondition postSearchCondition = new PostSearchCondition();
+        postSearchCondition.setTitle(SEARCH_TITLE_STR);
+
+        PostPagingDto postList = postService.getPostList(pageRequest, postSearchCondition);
+
+        //then
+        assertThat(postList.getTotalElementCount()).isEqualTo(COND_POST_COUNT);
+        assertThat(postList.getTotalPageCount()).isEqualTo((COND_POST_COUNT % SIZE == 0)
+                                                                    ? COND_POST_COUNT/SIZE
+                                                                    : COND_POST_COUNT/SIZE + 1);
+        assertThat(postList.getCurrentPageNum()).isEqualTo(PAGE);
+        assertThat(postList.getCurrentPageElementCount()).isEqualTo(SIZE);
+    }
+
+
+    @Test
+    public void 포스트_검색_내용일치() throws Exception {
+        //given
+        /**
+         * MEMBER 저장
+         */
+
+        Member member1 = memberRepository.save(Member.builder().username("username1").password("1234567890").name("USER1").nickName("밥 잘먹는 동훈이1").role(Role.USER).age(22).build());
+
+
+        /**
+         * 일반 POST 생성
+         */
+        final int DEFAULT_POST_COUNT = 100;
+        for(int i = 1; i<=DEFAULT_POST_COUNT; i++ ){
+            Post post = Post.builder().title("게시글"+ i).content("내용"+i).build();
+            post.confirmWriter(member1);
+            postRepository.save(post);
+        }
+
+
+        /**
+         * 제목에 AAA가 들어간 POST 생성
+         */
+        final String SEARCH_CONTENT_STR = "AAA";
+
+        final int COND_POST_COUNT = 100;
+
+        for(int i = 1; i<=COND_POST_COUNT; i++ ){
+            Post post = Post.builder().title("게시글"+ i).content(SEARCH_CONTENT_STR+i).build();
+            post.confirmWriter(member1);
+            postRepository.save(post);
+        }
+        clear();
+
+
+
+        //when
+        final int PAGE = 2;
+        final int SIZE = 20;
+        PageRequest pageRequest = PageRequest.of(PAGE, SIZE);
+
+        PostSearchCondition postSearchCondition = new PostSearchCondition();
+        postSearchCondition.setContent(SEARCH_CONTENT_STR);
+
+        PostPagingDto postList = postService.getPostList(pageRequest, postSearchCondition);
+
+        //then
+        assertThat(postList.getTotalElementCount()).isEqualTo(COND_POST_COUNT);
+        assertThat(postList.getTotalPageCount()).isEqualTo((COND_POST_COUNT % SIZE == 0)
+                ? COND_POST_COUNT/SIZE
+                : COND_POST_COUNT/SIZE + 1);
+        assertThat(postList.getCurrentPageNum()).isEqualTo(PAGE);
+        assertThat(postList.getCurrentPageElementCount()).isEqualTo(SIZE);
+    }
+
+    @Test
+    public void 포스트_검색_제목과내용일치() throws Exception {
+        //given
+        /**
+         * MEMBER 저장
+         */
+
+        Member member1 = memberRepository.save(Member.builder().username("username1").password("1234567890").name("USER1").nickName("밥 잘먹는 동훈이1").role(Role.USER).age(22).build());
+
+
+        /**
+         * 일반 POST 생성
+         */
+        final int DEFAULT_POST_COUNT = 100;
+        for(int i = 1; i<=DEFAULT_POST_COUNT; i++ ){
+            Post post = Post.builder().title("게시글"+ i).content("내용"+i).build();
+            post.confirmWriter(member1);
+            postRepository.save(post);
+        }
+
+
+        /**
+         * 제목에 AAA가 들어간 POST 생성
+         */
+        final String SEARCH_TITLE_STR = "AAA";
+        final String SEARCH_CONTENT_STR = "BBB";
+
+        final int COND_POST_COUNT = 100;
+
+        for(int i = 1; i<=COND_POST_COUNT; i++ ){
+            Post post = Post.builder().title(SEARCH_TITLE_STR+ i).content(SEARCH_CONTENT_STR+i).build();
+            post.confirmWriter(member1);
+            postRepository.save(post);
+        }
+        clear();
+
+
+
+        //when
+        final int PAGE = 2;
+        final int SIZE = 20;
+        PageRequest pageRequest = PageRequest.of(PAGE, SIZE);
+
+        PostSearchCondition postSearchCondition = new PostSearchCondition();
+        postSearchCondition.setTitle(SEARCH_TITLE_STR);
+        postSearchCondition.setContent(SEARCH_CONTENT_STR);
+
+        PostPagingDto postList = postService.getPostList(pageRequest, postSearchCondition);
+
+        //then
+        assertThat(postList.getTotalElementCount()).isEqualTo(COND_POST_COUNT);
+        assertThat(postList.getTotalPageCount()).isEqualTo((COND_POST_COUNT % SIZE == 0)
+                ? COND_POST_COUNT/SIZE
+                : COND_POST_COUNT/SIZE + 1);
+        assertThat(postList.getCurrentPageNum()).isEqualTo(PAGE);
+        assertThat(postList.getCurrentPageElementCount()).isEqualTo(SIZE);
+    }
 
 }

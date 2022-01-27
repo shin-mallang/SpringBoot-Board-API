@@ -1,16 +1,20 @@
 package boardexample.myboard.domain.member.dto;
 
 import boardexample.myboard.domain.member.Member;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class MemberInfoDto {
 
-    private final String name;
-    private final String nickName;
-    private final String username;
-    private final Integer age;
+    private String name;
+    private String nickName;
+    private String username;
+    private Integer age;
+
 
 
     @Builder
