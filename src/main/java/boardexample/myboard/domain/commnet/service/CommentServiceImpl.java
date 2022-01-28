@@ -74,7 +74,7 @@ public class CommentServiceImpl implements CommentService{
 
 
     @Override
-    public void remove(Long id) throws Exception {
+    public void remove(Long id) throws CommentException {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new CommentException(CommentExceptionType.NOT_POUND_COMMENT));
 
         if(!comment.getWriter().getUsername().equals(SecurityUtil.getLoginUsername())){
@@ -83,6 +83,6 @@ public class CommentServiceImpl implements CommentService{
 
         comment.remove();
         List<Comment> removableCommentList = comment.findRemovableList();
-        removableCommentList.forEach(removableComment -> commentRepository.delete(removableComment));
+        commentRepository.deleteAll(removableCommentList);
     }
 }
