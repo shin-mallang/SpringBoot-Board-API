@@ -1,67 +1,7 @@
 spring:
-
-
   profiles:
-    include: jwt
-
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/jpa
-    username: sa
-    password: 1
-  data:
-    web:
-      pageable:
-        default-page-size: 20  #페이징 할 때 기본값, 20개씩 조회
-
-
-
-
-  servlet:
-    multipart:
-      max-request-size: 5MB  #업로드 파일 크기 총량 제한
-      max-file-size: 2MB     #업로드 파일 크기 제한
-
-
-
-  jpa:
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        user_sql_cooments: true
-
-
-        default_batch_fetch_size: 100 #배치 사이즈 (Collection 조회 최적화)
-
-    hibernate:
-      ddl-auto: none
-
-
-    open-in-view: false #OSIV 사용하지 않기
-
-
-
-
-
-logging:
-  level:
-    org:
-      apache:
-        coyote:
-          http11: debug #debug
-
-      hiberante:
-        SQL: debug
-
-    boardexample:
-      myboard: info
-
-
-
-file:
-  dir: D:\files\
-
-
+    group:
+      "dev-profile": "dev,jwt"
+      "prod-profile": "prod,jwt"
 
 

@@ -1,13 +1,16 @@
 spring:
+  config:
+    activate:
+      on-profile: dev
+  banner:
+    location: dev-banner.txt
 
-  profiles:
-    include: jwt
 
   datasource:
     driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://localhost/~/jpa
     username: sa
-
-
+    password: 1
   data:
     web:
       pageable:
@@ -34,15 +37,11 @@ spring:
         default_batch_fetch_size: 100 #배치 사이즈 (Collection 조회 최적화)
 
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
 
 
     open-in-view: false #OSIV 사용하지 않기
 
-
-  h2:
-    console:
-      enabled: true
 
 
 
@@ -50,23 +49,20 @@ spring:
 
 logging:
   level:
-    p6spy: info
+    p6spy: debug
+
     org:
       apache:
         coyote:
-          http11: OFF #debug
+          http11: debug #debug
 
       hiberante:
-        SQL: warn
+        SQL: debug
 
     boardexample:
-      myboard: info
+      myboard: debug
 
 
 
 file:
   dir: D:\files\
-
-
-
-

@@ -31,6 +31,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,7 +87,9 @@ class CommentControllerTest {
                                 .build(),
                         null)
         );
+
         SecurityContextHolder.setContext(emptyContext);
+
         clear();
     }
 
@@ -106,6 +109,7 @@ class CommentControllerTest {
     }
 
     private Long savePost(){
+
         String title = "제목";
         String content = "내용";
         PostSaveDto postSaveDto = new PostSaveDto(title, content, Optional.empty());
@@ -144,6 +148,7 @@ class CommentControllerTest {
     @Test
     public void 댓글저장_성공() throws Exception {
         //given
+
         Long postId = savePost();
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();

@@ -4,7 +4,6 @@ import boardexample.myboard.domain.member.repository.MemberRepository;
 import boardexample.myboard.domain.member.service.LoginService;
 import boardexample.myboard.global.jwt.filter.JwtAuthenticationProcessingFilter;
 import boardexample.myboard.global.jwt.service.JwtService;
-import boardexample.myboard.global.log.LogFilter;
 import boardexample.myboard.global.login.filter.JsonUsernamePasswordAuthenticationFilter;
 import boardexample.myboard.global.login.handler.LoginFailureHandler;
 import boardexample.myboard.global.login.handler.LoginSuccessJWTProvideHandler;
@@ -52,7 +51,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterAfter(jsonUsernamePasswordLoginFilter(), LogoutFilter.class);
         http.addFilterBefore(jwtAuthenticationProcessingFilter(), JsonUsernamePasswordAuthenticationFilter.class);
 
-        http.addFilterBefore(new LogFilter(), WebAsyncManagerIntegrationFilter.class);
 
     }
 

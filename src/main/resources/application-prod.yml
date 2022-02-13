@@ -1,13 +1,16 @@
 spring:
+  config:
+    activate:
+      on-profile: prod
 
-  profiles:
-    include: jwt
+  banner:
+    location: prod-banner.txt
 
   datasource:
     driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://localhost/~/jpa
     username: sa
-
-
+    password: 1
   data:
     web:
       pageable:
@@ -24,25 +27,16 @@ spring:
 
 
   jpa:
-    show-sql: true
     properties:
       hibernate:
-        format_sql: true
-        user_sql_cooments: true
-
-
         default_batch_fetch_size: 100 #배치 사이즈 (Collection 조회 최적화)
 
+
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
 
 
     open-in-view: false #OSIV 사용하지 않기
-
-
-  h2:
-    console:
-      enabled: true
 
 
 
@@ -50,14 +44,21 @@ spring:
 
 logging:
   level:
-    p6spy: info
+    p6spy: error
+
+
     org:
       apache:
         coyote:
-          http11: OFF #debug
+          http11: info #debug
 
-      hiberante:
-        SQL: warn
+  file:
+    path: D:\Log\mybored-log.txt
+
+
+
+
+
 
     boardexample:
       myboard: info
@@ -66,7 +67,3 @@ logging:
 
 file:
   dir: D:\files\
-
-
-
-
