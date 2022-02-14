@@ -9,8 +9,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-
 @Aspect
 @Component
 @RequiredArgsConstructor
@@ -35,7 +33,6 @@ public class LogAop {
         TraceStatus status = null;
 
         try{
-            joinPoint.getTarget();
             status = logTrace.begin(joinPoint.getSignature().toShortString());
             Object result = joinPoint.proceed();
 

@@ -23,7 +23,7 @@ public class TraceId {
     private String createId() {
         try {
             SecurityUtil.getLoginUsername();
-        }catch (NullPointerException e){
+        }catch (NullPointerException | ClassCastException e ){ //로그인 안하고 접근 & signUp등일 경우 anonymousUser가 반환되므로 캐스팅이 불가능
             return String.format("[Anonymous: %S]",UUID.randomUUID().toString().substring(0,8));
         }
         return SecurityUtil.getLoginUsername();
