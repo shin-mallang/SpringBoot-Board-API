@@ -9,13 +9,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
-public class PostInfoDto {
+public class PostInfoDto{
 
 
     private Long postId; //POST의 ID

@@ -3,12 +3,16 @@ package boardexample.myboard.domain.member;
 import boardexample.myboard.domain.BaseTimeEntity;
 import boardexample.myboard.domain.commnet.Comment;
 import boardexample.myboard.domain.post.Post;
+import boardexample.myboard.global.cache.CacheLogin;
 import lombok.*;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +26,7 @@ import static javax.persistence.GenerationType.*;
 @Entity
 @AllArgsConstructor
 @Builder
-public class Member extends BaseTimeEntity {
+public class Member extends BaseTimeEntity implements Serializable {
 
 
     @Id @GeneratedValue(strategy = IDENTITY)
@@ -107,9 +111,11 @@ public class Member extends BaseTimeEntity {
         this.age = age;
     }
 
+
     public void updateRefreshToken(String refreshToken){
         this.refreshToken = refreshToken;
     }
+
     public void destroyRefreshToken(){
         this.refreshToken = null;
     }

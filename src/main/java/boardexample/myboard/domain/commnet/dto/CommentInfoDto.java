@@ -4,10 +4,11 @@ import boardexample.myboard.domain.commnet.Comment;
 import boardexample.myboard.domain.member.dto.MemberInfoDto;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class CommentInfoDto {
+public class CommentInfoDto{
 
     private final static String DEFAULT_DELETE_MESSAGE = "삭제된 댓글입니다";
 

@@ -4,6 +4,7 @@ import boardexample.myboard.domain.commnet.dto.CommentSaveDto;
 import boardexample.myboard.domain.commnet.dto.CommentUpdateDto;
 import boardexample.myboard.domain.commnet.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 

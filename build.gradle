@@ -46,6 +46,13 @@ dependencies {
 	//QueryDSL
 	implementation 'com.querydsl:querydsl-jpa:5.0.0'
 	annotationProcessor group: 'com.querydsl', name: 'querydsl-apt', version: '5.0.0'
+
+
+	//Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	//embedded-redis
+	//implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.1'
 }
 
 test {

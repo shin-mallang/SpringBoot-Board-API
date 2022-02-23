@@ -8,6 +8,7 @@ import boardexample.myboard.domain.member.dto.MemberUpdateDto;
 import boardexample.myboard.domain.member.exception.MemberException;
 import boardexample.myboard.domain.member.exception.MemberExceptionType;
 import boardexample.myboard.domain.member.repository.MemberRepository;
+import boardexample.myboard.global.util.security.SecurityUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -167,7 +168,7 @@ class MemberServiceTest {
 
         //when
         String toBePassword = "1234567890!@#!@#";
-        memberService.updatePassword(PASSWORD, toBePassword);
+        memberService.updatePassword(PASSWORD, toBePassword, SecurityUtil.getLoginUsername());//TODO : 변경
         clear();
 
         //then
@@ -185,7 +186,7 @@ class MemberServiceTest {
 
         //when
         String updateName = "변경할래용";
-        memberService.update(new MemberUpdateDto(Optional.of(updateName),Optional.empty(), Optional.empty()));
+        memberService.update(new MemberUpdateDto(Optional.of(updateName),Optional.empty(), Optional.empty()), SecurityUtil.getLoginUsername());//TODO : 변경
         clear();
 
         //then
@@ -203,7 +204,7 @@ class MemberServiceTest {
 
         //when
         String updateNickName = "변경할래용";
-        memberService.update(new MemberUpdateDto(Optional.empty(), Optional.of(updateNickName), Optional.empty()));
+        memberService.update(new MemberUpdateDto(Optional.empty(), Optional.of(updateNickName), Optional.empty()), SecurityUtil.getLoginUsername());//TODO : 변경
         clear();
 
         //then
@@ -222,7 +223,7 @@ class MemberServiceTest {
 
         //when
         Integer updateAge = 33;
-        memberService.update(new MemberUpdateDto(Optional.empty(),  Optional.empty(), Optional.of(updateAge)));
+        memberService.update(new MemberUpdateDto(Optional.empty(),  Optional.empty(), Optional.of(updateAge)), SecurityUtil.getLoginUsername());//TODO : 변경
         clear();
 
         //then
@@ -242,7 +243,7 @@ class MemberServiceTest {
         //when
         String updateNickName = "변경할래요옹";
         String updateName = "변경할래용";
-        memberService.update(new MemberUpdateDto(Optional.of(updateName),Optional.of(updateNickName),Optional.empty()));
+        memberService.update(new MemberUpdateDto(Optional.of(updateName),Optional.of(updateNickName),Optional.empty()), SecurityUtil.getLoginUsername());//TODO : 변경
         clear();
 
         //then
@@ -263,7 +264,7 @@ class MemberServiceTest {
         //when
         Integer updateAge = 33;
         String updateName = "변경할래용";
-        memberService.update(new MemberUpdateDto(Optional.of(updateName),Optional.empty(),Optional.of(updateAge)));
+        memberService.update(new MemberUpdateDto(Optional.of(updateName),Optional.empty(),Optional.of(updateAge)), SecurityUtil.getLoginUsername());//TODO : 변경
         clear();
 
         //then
@@ -284,7 +285,7 @@ class MemberServiceTest {
         //when
         Integer updateAge = 33;
         String updateNickname = "변경할래용";
-        memberService.update(new MemberUpdateDto(Optional.empty(),Optional.of(updateNickname),Optional.of(updateAge)));
+        memberService.update(new MemberUpdateDto(Optional.empty(),Optional.of(updateNickname),Optional.of(updateAge)), SecurityUtil.getLoginUsername());//TODO : 변경
         clear();
 
         //then
@@ -306,7 +307,7 @@ class MemberServiceTest {
         Integer updateAge = 33;
         String updateNickname = "변경할래용";
         String updateName = "변경할래용";
-        memberService.update(new MemberUpdateDto(Optional.of(updateName),Optional.of(updateNickname),Optional.of(updateAge)));
+        memberService.update(new MemberUpdateDto(Optional.of(updateName),Optional.of(updateNickname),Optional.of(updateAge)), SecurityUtil.getLoginUsername());//TODO : 변경
         clear();
 
         //then
@@ -328,7 +329,7 @@ class MemberServiceTest {
         MemberSignUpDto memberSignUpDto = setMember();
 
         //when
-        memberService.withdraw(PASSWORD);
+        memberService.withdraw(PASSWORD, SecurityUtil.getLoginUsername());//TODO : 변경
 
         //then
         assertThat(assertThrows(Exception.class, ()-> memberRepository.findByUsername(memberSignUpDto.username()).orElseThrow(() -> new Exception("회원이 없습니다"))).getMessage()).isEqualTo("회원이 없습니다");
@@ -340,8 +341,8 @@ class MemberServiceTest {
         //given
         setMember();
 
-        //when, then
-        assertThat(assertThrows(MemberException.class ,() -> memberService.withdraw(PASSWORD+"1")).getExceptionType()).isEqualTo(MemberExceptionType.WRONG_PASSWORD);
+        //when, then TODO: 변경
+        assertThat(assertThrows(MemberException.class ,() -> memberService.withdraw(PASSWORD+"1", SecurityUtil.getLoginUsername())).getExceptionType()).isEqualTo(MemberExceptionType.WRONG_PASSWORD);
 
     }
 

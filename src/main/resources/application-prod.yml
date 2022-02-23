@@ -39,9 +39,20 @@ spring:
     open-in-view: false #OSIV 사용하지 않기
 
 
+  cache:
+    redis:
+      time-to-live: 86400000 #mills 단위 -> [1초 : 1000] ->   [1일 : 86400000]
+
+  redis:
+    port: 6379
+    host: localhost
 
 
 
+
+
+
+#LOG
 logging:
   level:
     p6spy: error

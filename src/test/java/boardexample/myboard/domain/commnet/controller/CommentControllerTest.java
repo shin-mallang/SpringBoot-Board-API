@@ -1,5 +1,6 @@
 package boardexample.myboard.domain.commnet.controller;
 
+import boardexample.myboard.MyboardApplication;
 import boardexample.myboard.domain.commnet.Comment;
 import boardexample.myboard.domain.commnet.dto.CommentSaveDto;
 import boardexample.myboard.domain.commnet.dto.CommentUpdateDto;
@@ -32,6 +33,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +54,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@ContextConfiguration(classes = {MyboardApplication.class})
 class CommentControllerTest {
 
     @Autowired MockMvc mockMvc;

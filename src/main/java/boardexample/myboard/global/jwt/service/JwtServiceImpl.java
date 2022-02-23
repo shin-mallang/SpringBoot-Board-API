@@ -1,6 +1,7 @@
 package boardexample.myboard.global.jwt.service;
 
 import boardexample.myboard.domain.member.repository.MemberRepository;
+import boardexample.myboard.global.cache.CacheLogin;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,6 +13,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,7 +75,9 @@ public class JwtServiceImpl implements JwtService{
                 .sign(Algorithm.HMAC512(secret));
     }
 
+    //TODO: 캐시
     @Override
+    @CacheEvict(value = CacheLogin.USER, key = "#p0")
     public void updateRefreshToken(String username, String refreshToken) {
         memberRepository.findByUsername(username)
                 .ifPresentOrElse(
@@ -85,6 +89,7 @@ public class JwtServiceImpl implements JwtService{
 
 
     @Override
+    @CacheEvict(value = CacheLogin.USER, key = "#p0")
     public void destroyRefreshToken(String username) {
         memberRepository.findByUsername(username)
                 .ifPresentOrElse(

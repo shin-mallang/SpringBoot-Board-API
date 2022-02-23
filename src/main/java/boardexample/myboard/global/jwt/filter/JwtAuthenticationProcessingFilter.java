@@ -2,9 +2,11 @@ package boardexample.myboard.global.jwt.filter;
 
 import boardexample.myboard.domain.member.Member;
 import boardexample.myboard.domain.member.repository.MemberRepository;
+import boardexample.myboard.global.cache.CacheLogin;
 import boardexample.myboard.global.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -60,13 +62,13 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
 
     private void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        jwtService.extractAccessToken(request).ifPresent(
+        jwtService.extractAccessToken(request).filter(jwtService::isTokenValid).ifPresent(
 
                 accessToken -> jwtService.extractUsername(accessToken).ifPresent(
 
                         username -> memberRepository.findByUsername(username).ifPresent(
 
-                                member -> saveAuthentication(member)
+                                this::saveAuthentication
                         )
                 )
         );

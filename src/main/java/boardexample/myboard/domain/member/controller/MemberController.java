@@ -2,6 +2,7 @@ package boardexample.myboard.domain.member.controller;
 
 import boardexample.myboard.domain.member.dto.*;
 import boardexample.myboard.domain.member.service.MemberService;
+import boardexample.myboard.global.util.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class MemberController {
     @PutMapping("/member")
     @ResponseStatus(HttpStatus.OK)
     public void updateBasicInfo(@Valid @RequestBody MemberUpdateDto memberUpdateDto) throws Exception {
-        memberService.update(memberUpdateDto);
+        memberService.update(memberUpdateDto, SecurityUtil.getLoginUsername());
     }
 
     /**
@@ -40,7 +41,7 @@ public class MemberController {
     @PutMapping("/member/password")
     @ResponseStatus(HttpStatus.OK)
     public void updatePassword(@Valid @RequestBody UpdatePasswordDto updatePasswordDto) throws Exception {
-        memberService.updatePassword(updatePasswordDto.checkPassword(),updatePasswordDto.toBePassword());
+        memberService.updatePassword(updatePasswordDto.checkPassword(),updatePasswordDto.toBePassword(), SecurityUtil.getLoginUsername());
     }
 
 
@@ -50,7 +51,7 @@ public class MemberController {
     @DeleteMapping("/member")
     @ResponseStatus(HttpStatus.OK)
     public void withdraw(@Valid @RequestBody MemberWithdrawDto memberWithdrawDto) throws Exception {
-        memberService.withdraw(memberWithdrawDto.checkPassword());
+        memberService.withdraw(memberWithdrawDto.checkPassword(), SecurityUtil.getLoginUsername());
     }
 
 

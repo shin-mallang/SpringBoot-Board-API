@@ -17,11 +17,11 @@ public interface MemberService {
 
     void signUp(MemberSignUpDto memberSignUpDto) throws Exception;
 
-    void update(MemberUpdateDto memberUpdateDto) throws Exception;
+    void update(MemberUpdateDto memberUpdateDto, String username) throws Exception;
 
-    void updatePassword(String asIsPassword, String toBePassword) throws Exception;
+    void updatePassword(String asIsPassword, String toBePassword, String username) throws Exception;
 
-    void withdraw(String checkPassword) throws Exception;
+    void withdraw(String checkPassword, String username) throws Exception;
 
     MemberInfoDto getInfo(Long id) throws Exception;
 

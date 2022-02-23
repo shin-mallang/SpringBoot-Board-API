@@ -5,12 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class PostPagingDto {
+public class PostPagingDto{
 
     private int totalPageCount;//총 몇페이지가 존재하는지
     private int currentPageNum;//현재 몇 페이지인지

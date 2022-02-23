@@ -30,8 +30,8 @@ class JwtServiceTest {
 
 
 
-    @Autowired JwtService jwtService;
     @Autowired MemberRepository memberRepository;
+    @Autowired JwtService jwtService = new JwtServiceImpl(memberRepository);
     @Autowired EntityManager em;
 
     @Value("${jwt.secret}")

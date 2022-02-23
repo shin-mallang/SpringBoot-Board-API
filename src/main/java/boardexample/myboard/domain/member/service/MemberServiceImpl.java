@@ -7,8 +7,11 @@ import boardexample.myboard.domain.member.dto.MemberUpdateDto;
 import boardexample.myboard.domain.member.exception.MemberException;
 import boardexample.myboard.domain.member.exception.MemberExceptionType;
 import boardexample.myboard.domain.member.repository.MemberRepository;
+import boardexample.myboard.global.cache.CacheLogin;
 import boardexample.myboard.global.util.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class MemberServiceImpl implements MemberService{
+
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -59,9 +63,10 @@ public class MemberServiceImpl implements MemberService{
      * 회원정보 수정
      */
     @Override
-    public void update(MemberUpdateDto memberUpdateDto) throws Exception {
+    @CacheEvict(value = CacheLogin.USER, key = "#p1")
+    public void update(MemberUpdateDto memberUpdateDto, String username) throws Exception {
         Member member = memberRepository.findByUsername(
-                                                        SecurityUtil.getLoginUsername()) //SecurityContextHolder에 들어있는 Username 가져옴
+                        username) //SecurityContextHolder에 들어있는 Username 가져옴, TODO : 이거 변경함
                                         .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
 
@@ -75,11 +80,12 @@ public class MemberServiceImpl implements MemberService{
      * 비밀번호 변경
      */
     @Override
-    public void updatePassword(String asIsPassword, String toBePassword) throws Exception {
+    @CacheEvict(value = CacheLogin.USER, key = "#p1")
+    public void updatePassword(String asIsPassword, String toBePassword, String username) throws Exception {
 
 
         Member member = memberRepository.findByUsername(
-                                                        SecurityUtil.getLoginUsername())
+                        username)
                                         .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
 
@@ -98,9 +104,10 @@ public class MemberServiceImpl implements MemberService{
      * 회원탈퇴
      */
     @Override
-    public void withdraw(String checkPassword) throws Exception {
+    @CacheEvict(value = CacheLogin.USER, key = "#p1")
+    public void withdraw(String checkPassword, String username) throws Exception {
         Member member = memberRepository.findByUsername(
-                                                        SecurityUtil.getLoginUsername())
+                        username)
                                         .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
 

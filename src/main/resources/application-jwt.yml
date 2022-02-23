@@ -2,7 +2,7 @@ jwt:
   secret: ZG9uZ2h1bi1zaGFycC1kYnJ1YS13ZWItcHJvamVjdC11c2luZy1qd3Qtc2VjcmV0LURvbmdodW4tc3ByaW5nLWJvb3Qtand0LWJhY2stZW5kLWFuZC1qcy1jb2xsYWJv
 
   access:
-    expiration: 200
+    expiration: 20000
     header: Authorization
 
   refresh:
