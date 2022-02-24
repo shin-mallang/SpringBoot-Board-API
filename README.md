@@ -38,8 +38,8 @@ https://ttl-blog.tistory.com/265?category=910686
 
 ### 구조
 
-─boardexample
-   └─myboard
+```
+   ─myboard
        ├─domain
        │  ├─commnet
        │  │  ├─controller
@@ -78,5 +78,5 @@ https://ttl-blog.tistory.com/265?category=910686
            └─util
                └─security
 
-
+```
 
