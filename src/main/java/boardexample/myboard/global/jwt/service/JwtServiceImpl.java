@@ -129,9 +129,9 @@ public class JwtServiceImpl implements JwtService{
     public Optional<String> extractAccessToken(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(accessHeader)).filter(
 
-                refreshToken -> refreshToken.startsWith(BEARER)
+                accessToken -> accessToken.startsWith(BEARER)
 
-        ).map(refreshToken -> refreshToken.replace(BEARER, ""));
+        ).map(accessToken -> accessToken.replace(BEARER, ""));
     }
 
     @Override
